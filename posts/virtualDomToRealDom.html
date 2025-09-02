@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    const vnode = {
+      type: 'div',
+      props: {
+        id: 'hello',
+        class: 'red2',
+        onClick: () => alert('clicked')
+      },
+      children: [{
+        type: "span",
+        children: "hello"
+      }]
+    }
+
+    function render(vnode, container) {
+      const el = document.createElement(vnode.type);
+      // 保存 DOM 引用
+      vnode.el = el;
+
+      // 处理普通属性
+      if (vnode.props) {
+        Object.entries(vnode.props).forEach(([key, value]) => {
+          if (key === 'class') {
+            el.className = value; // 直接设置类名
+          } else if (key.startsWith('on')) {
+            el.addEventListener(key.slice(2).toLowerCase(), value)
+          } else {
+            el[key] = value
+          }
+        })
+      }
+
+      if (Array.isArray(vnode.children)) {
+        vnode.children.forEach(child => render(child, el))
+      } else if (vnode.children != null) {
+        el.textContent = vnode.children
+      }
+
+      container.appendChild(el)
+    }
+
+    // 处理不同类型节点的替换
+    function processReplace(n1, n2, container) {
+      const parent = n1.el.parentNode;
+      const anchor = n1.el.nextSibling;
+
+      // 移除旧节点
+      parent.removeChild(n1.el);
+
+      // 创建新节点
+      const newEl = document.createElement(n2.type );
+      n2.el = newEl
+      parent.insertBefore(newEl, anchor);
+
+      // 处理属性
+      if (n2.props) {
+        patchProps(newEl, {}, n2.props);
+      }
+
+      // 处理子节点
+      processChildren(newEl, null, n2.children);
+    }
+
+    // 处理文本子节点
+    function processTextChildren(el, oldText, newText) {
+      if (newText !== oldText) {
+        el.textContent = newText;
+      }
+    }
+
+    // 处理数组子节点
+    function processArrayChildren(el, oldChildren, newChildren) {
+      if (!Array.isArray(oldChildren)) {
+        // 旧子节点不是数组，清空后添加新子节点
+        el.textContent = '';
+        newChildren.forEach(child => render(child, el));
+        return;
+      }
+
+      // 旧子节点也是数组，需要进行子节点的 diff
+      const commonLength = Math.min(oldChildren.length, newChildren.length);
+
+      // 更新公共部分
+      for (let i = 0; i < commonLength; i++) {
+        patch(oldChildren[i], newChildren[i], el);
+      }
+
+      // 如果新子节点更多，添加多余的
+      if (newChildren.length > oldChildren.length) {
+        newChildren.slice(oldChildren.length).forEach(child => {
+          render(child, el);
+        });
+      }
+
+      // 如果旧子节点更多，删除多余的
+      if (oldChildren.length > newChildren.length) {
+        oldChildren.slice(newChildren.length).forEach(child => {
+          el.removeChild(child.el);
+        });
+      }
+    }
+
+    // 处理子节点
+    function processChildren(el, oldChildren, newChildren) {
+      if (typeof newChildren === 'string') {
+        // 新子节点是文本
+        processTextChildren(el, typeof oldChildren === 'string' ? oldChildren : null, newChildren);
+      } else if (Array.isArray(newChildren)) {
+        // 新子节点是数组
+        processArrayChildren(el, oldChildren, newChildren);
+      } else if (newChildren == null) {
+        // 新子节点为空，清空内容
+        el.textContent = '';
+      }
+    }
+
+    // 处理相同类型节点的更新
+    function processSameNode(n1, n2) {
+      const el = n2.el = n1.el;
+
+      // 更新属性
+      patchProps(el, n1.props || {}, n2.props || {});
+
+      // 更新子节点
+      processChildren(el, n1.children, n2.children);
+    }
+
+    function patchProps(el, oldProps, newProps) {
+      // 设置新属性或更新已有属性
+      for (const key in newProps) {
+        const oldValue = oldProps?.[key];
+        const newValue = newProps[key];
+
+        if (newValue !== oldValue) {
+          if (key === 'class') {
+            el.className = newValue;
+          } else if (key.startsWith('on')) {
+            // 移除旧事件监听器
+            if (oldValue) {
+              el.removeEventListener(key.slice(2).toLowerCase(), oldValue);
+            }
+            // 添加新事件监听器
+            el.addEventListener(key.slice(2).toLowerCase(), newValue);
+          } else {
+            el[key] = newValue;
+          }
+        }
+      }
+
+      // 删除不再存在的属性
+      for (const key in oldProps) {
+        if (!(key in newProps)) {
+          if (key === 'class') {
+            el.className = '';
+          } else if (key.startsWith('on')) {
+            el.removeEventListener(key.slice(2).toLowerCase(), oldProps[key]);
+          } else {
+            el[key] = '';
+          }
+        }
+      }
+    }
+
+    // 更新函数
+    function patch(n1, n2, container) {
+      // 如果类型不同，直接替换
+      if (n1.type !== n2.type) {
+        processReplace(n1, n2, container);
+        return;
+      }
+
+      // 类型相同，更新属性和子节点
+      processSameNode(n1, n2);
+    }
+
+    render(vnode, document.getElementById('app'))
+    setTimeout(() => {
+      patch(vnode, {
+        type: 'div',
+        props: {
+          class: 'red3',
+          onClick: () => alert('clicked2')
+        },
+        children: [{
+          type: "span",
+          children: "hello2"
+        }]
+      }, document.getElementById('app'))
+    }, 1000)
+
+  </script>
+</body>
+
+</html>

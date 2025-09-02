@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <div id="app2"></div>
+  <script>
+    class RefImpl {
+      constructor(value) {
+        this._value = value
+        // ref 专属的依赖收集器
+        this.dep = new Set()
+      }
+
+      get value() {
+        // 依赖收集
+        if (activeEffect) {
+          this.dep.add(activeEffect)
+        }
+        return this._value
+      }
+
+      set value(newValue) {
+        console.log('set value', newValue)
+        console.log('this._value', this._value,this.dep)
+        // 如果值没有变化，不触发更新
+        if (Object.is(newValue, this._value)) return
+        this._value = newValue
+        // 触发依赖
+        this.dep.forEach(effect => effect())
+      }
+    }
+    let app = document.getElementById('app')
+    let app2 = document.getElementById('app2')
+    let activeEffect = null // 当前正在执行的副作用函数
+    let data = reactive({
+      message: 'Hello, World!',
+    })
+
+    let data2 = ref("Hello, World!")
+    const targetMap = new WeakMap()
+
+    function reactive(target) {
+      const proxy = new Proxy(target, {
+        get(target, key, receiver) {
+          // 依赖收集
+          track(target, key)
+          return Reflect.get(target, key, receiver)
+        },
+        set(target, key, value, receiver) {
+          const oldValue = target[key]
+          const result = Reflect.set(target, key, value, receiver)
+          if (oldValue !== value) {  // 值变化时才触发更新
+            trigger(target, key)
+          }
+          return result
+        }
+      })
+      return proxy
+    }
+
+    function track(target, key) {
+      if (!activeEffect) return
+      let depsMap = targetMap.get(target)
+      if (!depsMap) {
+        targetMap.set(target, (depsMap = new Map()))
+      }
+      let dep = depsMap.get(key)
+      if (!dep) {
+        depsMap.set(key, (dep = new Set()))
+      }
+      dep.add(activeEffect)
+    }
+
+    function trigger(target, key) {
+      const depsMap = targetMap.get(target)
+      if (!depsMap) return
+      const dep = depsMap.get(key)
+      if (dep) {
+        dep.forEach(effect => effect())
+      }
+    }
+
+
+    function toReactive(value) {
+      return typeof value === 'object' ? reactive(value) : value
+    }
+
+    function ref(value) {
+      return new RefImpl(toReactive(value))
+    }
+
+
+    function effect(fn) {
+      // 设置当前正在执行的副作用函数
+      activeEffect = fn
+      fn()
+    }
+
+    // 收集依赖
+    effect(() => {
+      app.innerHTML = data.message
+      app2.innerHTML = data2.value
+    })
+
+    setTimeout(() => {
+      console.log(targetMap)
+      // 改变数据,触发依赖
+      data.message = 'Hello Vue3'
+      data2.value = 'Hello Vue3'
+    }, 2000)
+  </script>
+</body>
+
+</html>
