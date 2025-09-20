@@ -128,7 +128,7 @@ if (i > e1) {
 相反，如果旧DOM比新DOM多出一些节点，这些多余的节点需要被删除：
 
 <img src="../assets/images/diff/sameSequenceUnmount.png" alt="删除节点示例1" />
-<img src="../assets/images/diff/sameSequenceUnmount2.png" alt="删除节点示例2" />
+<img src="../assets/images/diff/sameSequenceUnMount2.png" alt="删除节点示例2" />
 
 ```js
 // 如果i > e2，说明新节点已经全部处理完，但旧节点还有剩余
