@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vitepress dev ",
     "build": "vitepress build",
+    "preview": "vitepress preview",
     "serve": "vitepress serve"
   },
   "devDependencies": {

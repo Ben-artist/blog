@@ -5,14 +5,14 @@ jobs:
     name: CI&CD # 此任务（job）的名字
     runs-on: ubuntu-latest # 运行环境
     steps:
-      - uses: actions/checkout@master # 切换分支到main
+      - uses: actions/checkout@v4 # 切换分支到main
         with:
           fetch-depth: 2
 
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v2.1.4 # 使用node环境
+        uses: actions/setup-node@v4 # 使用node环境
         with:
-          node-version: '18.x' # 版本12
+          node-version: '18.x' # 版本18
 
       # - name: Cache node modules
       #   id: cache # 缓存id
@@ -34,15 +34,15 @@ jobs:
         run: pnpm run build #  打包文件
         
       # # 如果FTP-Deploy-Action出现，Dirty repository: Having uncommitted changes. 问题时，使用以下注释步骤解决问题
-      # - name: reset git
-      #   run: git reset --hard
+      - name: reset git
+        run: git reset --hard
 
-      # - name: FTP-Deploy-Action
-      #   uses: SamKirkland/FTP-Deploy-Action@3.1.1
-      #   with:
-      #     ftp-server: sftp://${{ secrets.FTP_IP }}/usr/local/src/pre/home # 服务器地址和端口（可以填域名，不过我服务器做了全站加速会导向加速结点的IP，所以只能用服务器的IP）
-      #     ftp-username: ${{ secrets.FTP_USERNAME }} # FTP用户名
-      #     ftp-password: ${{ secrets.FTP_PASSWORD }} # FTP密码
-      #     git-ftp-args: --insecure # （如果是FTP连接的话--insecure不用加）
-      #     local-dir: ./.vitepress/dist # 选择哪些文件要部署到服务器，这个选项在这里选了之后，要在.git-ftp-include中添加相应的路径
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: sftp://47.120.71.238/usr/local/nginx/html/blog # 阿里云ECS服务器地址和目标目录
+          ftp-username: ${{ secrets.FTP_USERNAME }} # FTP用户名
+          ftp-password: ${{ secrets.FTP_PASSWORD }} # FTP密码
+          git-ftp-args: --insecure # SFTP连接参数
+          local-dir: ./.vitepress/dist # VitePress构建输出目录
 
