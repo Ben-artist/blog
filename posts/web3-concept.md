@@ -1,6 +1,6 @@
 ---
 title: Web3核心概念：Uniswap流动性机制深度解析
-date: 2025-01-20
+date: 2025-09-20
 tags: ['Web3', 'DeFi', 'Uniswap', '流动性', 'AMM']
 description: '深入解析Uniswap的流动性机制，从基础概念到实际应用，帮助理解去中心化交易所的核心原理。'
 ---

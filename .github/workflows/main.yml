@@ -1,20 +1,31 @@
-# 方案2: 使用 SSH 私钥认证的版本
-on: push
-name: CI/CD
+name: Dual Deployment (Aliyun + GitHub Pages)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  FTP-Deploy-Action:
-    name: CI&CD
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
-      - name: Use Node.js 22.x
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '22'
 
       - name: Install pnpm
         run: npm i pnpm -g
@@ -25,15 +36,36 @@ jobs:
       - name: Build Packages
         run: pnpm run build
 
-      # 使用 SSH 私钥认证（更安全）
-      - name: Deploy to SFTP Server with SSH Key
+      # 部署到阿里云服务器
+      - name: Deploy to Aliyun Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: 47.120.71.238
           username: ${{ secrets.FTP_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # 使用SSH私钥而不是密码
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "./.vitepress/dist/*"
           target: "/usr/local/nginx/html/blog"
           strip_components: 3
           overwrite: true
+
+      # 同时部署到 GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .vitepress/dist
+
+  # GitHub Pages 部署作业
+  deploy-github:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
