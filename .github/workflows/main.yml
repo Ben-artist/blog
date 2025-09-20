@@ -34,8 +34,8 @@ jobs:
         run: pnpm run build #  打包文件
         
       # # 如果FTP-Deploy-Action出现，Dirty repository: Having uncommitted changes. 问题时，使用以下注释步骤解决问题
-      - name: reset git
-        run: git reset --hard
+      # - name: reset git
+      #   run: git reset --hard
 
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
@@ -43,6 +43,11 @@ jobs:
           ftp-server: sftp://47.120.71.238/usr/local/nginx/html/blog # 阿里云ECS服务器地址和目标目录
           ftp-username: ${{ secrets.FTP_USERNAME }} # FTP用户名
           ftp-password: ${{ secrets.FTP_PASSWORD }} # FTP密码
-          git-ftp-args: --insecure # SFTP连接参数
+          git-ftp-args: --insecure --force # SFTP连接参数，强制上传
           local-dir: ./.vitepress/dist # VitePress构建输出目录
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
 
