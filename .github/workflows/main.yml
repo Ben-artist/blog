@@ -9,10 +9,10 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v4 # 使用node环境
         with:
-          node-version: '18.x' # 版本18
+          node-version: '16.x' # 版本16，兼容VitePress 2.0.0-alpha.11
 
       # - name: Cache node modules
       #   id: cache # 缓存id
