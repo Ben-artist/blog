@@ -1,49 +1,39 @@
-on: push # 触发此文件运行的条件
-name: CI/CD # 此工作流程（workflow）的名字
+# 方案2: 使用 SSH 私钥认证的版本
+on: push
+name: CI/CD
+
 jobs:
   FTP-Deploy-Action:
-    name: CI&CD # 此任务（job）的名字
-    runs-on: ubuntu-latest # 运行环境
+    name: CI&CD
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # 切换分支到main
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
       - name: Use Node.js 22.x
-        uses: actions/setup-node@v4 # 使用node环境
+        uses: actions/setup-node@v4
         with:
-          node-version: '22.x' # 版本22，与本地环境保持一致
-
-      # - name: Cache node modules
-      #   id: cache # 缓存id
-      #   uses: actions/cache@v2
-      #   env:
-      #     cache-name: cache-node-modules # 缓存名字
-      #   with:
-      #     path: node_modules # 缓存路径
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package.json') }} # 缓存标识
+          node-version: '22.x'
 
       - name: Install pnpm
         run: npm i pnpm -g
 
       - name: Install Dependencies
-        # if: steps.cache.outputs.cache-hit != 'true' # 如果没有缓存的话
-        run: pnpm i # 安装依赖
+        run: pnpm i
 
       - name: Build Packages
-        run: pnpm run build #  打包文件
-        
-      # # 如果FTP-Deploy-Action出现，Dirty repository: Having uncommitted changes. 问题时，使用以下注释步骤解决问题
-      # - name: reset git
-      #   run: git reset --hard
+        run: pnpm run build
 
-      - name: Deploy to SFTP Server
-        uses: vfiee/sftp-upload-action@v1.0
+      # 使用 SSH 私钥认证（更安全）
+      - name: Deploy to SFTP Server with SSH Key
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: 47.120.71.238 # 阿里云ECS服务器地址
-          username: ${{ secrets.FTP_USERNAME }} # SFTP用户名
-          password: ${{ secrets.FTP_PASSWORD }} # SFTP密码
-          port: 22 # SFTP端口
-          local-dir: ./.vitepress/dist # VitePress构建输出目录
-          remote-dir: /usr/local/nginx/html/blog # 服务器目标目录
-
+          host: 47.120.71.238
+          username: ${{ secrets.FTP_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # 使用SSH私钥而不是密码
+          port: 22
+          source: "./.vitepress/dist/*"
+          target: "/usr/local/nginx/html/blog"
+          strip_components: 3
+          overwrite: true
