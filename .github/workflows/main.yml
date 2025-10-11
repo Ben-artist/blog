@@ -42,11 +42,11 @@ jobs:
         with:
           host: 47.120.71.238
           username: ${{ secrets.FTP_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.FTP_PASSWORD }}
           port: 22
-          source: "./.vitepress/dist/*"
-          target: "/usr/local/nginx/html/blog"
-          strip_components: 3
+          source: ".vitepress/dist/"
+          target: "/usr/local/nginx/html/"
+          strip_components: 2
           overwrite: true
 
       # 同时部署到 GitHub Pages

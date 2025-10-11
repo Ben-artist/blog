@@ -1,12 +1,11 @@
 import { getPosts, getPostLength } from "./theme/serverUtils";
 import { defineConfig } from "vitepress";
-
-export default defineConfig({
+import {withMermaid} from "vitepress-plugin-mermaid";
+export default withMermaid({
   lang: "en-US",
   title: "TSK",
   base: "/blog/",
   description: "Home of TSK",
-  logo: "https://power-mall-2.oss-cn-beijing.aliyuncs.com/avator.png",
   head: [
     [
       "link",
