@@ -517,4 +517,59 @@ computed: {
 }
 </script>
 ```
+## FOO 
 
+```js
+function Foo (){
+  getName=function(){
+    console.log(1)
+  }
+// 自身实例
+  return this
+};
+
+Foo.getName=function(){
+  console.log(2)
+};
+
+Foo.prototype.getName=function(){
+  console.log(3)
+};
+
+var getName = function(){
+  console.log(4)
+};
+
+function getName(){
+  console.log(5)
+}
+
+Foo.getName()  // 2
+getName() //4 
+// console.log(Foo()); // window 就是指向谁调用的
+Foo().getName() // 1
+getName() // 1
+new Foo.getName() //2 断句 new   Foo.getName() new 不带参数优先级是19 函数访问是20 所以要先执行函数访问
+new Foo().getName()//3 new Foo()  然后再.getName()   new Foo() 中的this 指向那个生成后的子对象 prototype 上的属性只能有new 出来的属性调用。自身不能使用
+// new new Foo().getName()
+```
+
+## this指向
+
+```js
+var name="lisi";
+ let obj = {
+    name: 'zs',
+    c: function () {
+/*箭头函数的作用域在定义的时候就已经确定，当obj.c()的时候，this已经绑定了 */
+/* 如果是 箭头函数的话是 zs，不是的话是 lisi */
+      return () =>  {
+          console.log(this);
+          console.log(this.name);
+      }
+    }
+  }
+
+ let d = obj.c();
+ d()
+```

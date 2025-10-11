@@ -152,27 +152,35 @@ PoW通过让参与者解决一个数学难题来证明他们投入了计算资�
 **PoW的基本流程**：
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 flowchart TD
-    Start([开始挖矿]) --> Step1[📦 收集交易<br/>打包交易到区块]
-    Step1 --> Step2[📋 设置区块头<br/>前一区块哈希<br/>默克尔根<br/>时间戳<br/>难度目标<br/>Nonce=0]
-    Step2 --> Step3[🔢 计算哈希<br/>SHA-256区块头]
-    Step3 --> Check{🎯 哈希值<br/>< 目标值?}
-    Check -->|❌ 否| Increment[Nonce++<br/>尝试新的随机数]
-    Increment --> Step3
-    Check -->|✅ 是| Step4[📢 广播新区块<br/>发送到全网]
-    Step4 --> Reward[🎁 获得奖励<br/>新比特币 + 交易费]
-    Reward --> End([完成])
+    Start([🏁 开始挖矿]) --> Collect[📦 收集交易<br/>将交易打包成区块]
+    Collect --> SetHeader[📋 设置区块头<br/>前一区块哈希 + 默克尔根<br/>时间戳 + 难度目标<br/>🎲 Nonce = 0]
+    SetHeader --> CalcHash[🔢 计算哈希<br/>SHA-256区块头]
+    CalcHash --> Check{🎯 哈希值 < 目标值?<br/>前导零足够多?}
+    Check -->|❌ 不满足| Increment[Nonce++<br/>尝试下一个随机数]
+    Increment --> CalcHash
+    Check -->|✅ 满足| Broadcast[📢 广播新区块<br/>发送到全网节点]
+    Broadcast --> Reward[🎁 获得奖励<br/>新比特币 + 交易手续费]
+    Reward --> End([🏆 完成])
     
-    style Start fill:#e1f5e1
-    style Step1 fill:#fff4cc
-    style Step2 fill:#fff4cc
-    style Step3 fill:#ffe1cc
-    style Check fill:#ffd4d4
-    style Increment fill:#ffcccc
-    style Step4 fill:#d4f1ff
-    style Reward fill:#ccffcc
-    style End fill:#e1f5e1
+    style Start fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+    style Collect fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style SetHeader fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style CalcHash fill:#ffe0b2,stroke:#ff9800,stroke-width:2px
+    style Check fill:#ffcdd2,stroke:#f44336,stroke-width:3px
+    style Increment fill:#ffebee,stroke:#e57373,stroke-width:2px
+    style Broadcast fill:#bbdefb,stroke:#2196f3,stroke-width:2px
+    style Reward fill:#c8e6c9,stroke:#66bb6a,stroke-width:3px
+    style End fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
 ```
+
+**流程说明**：
+1. **📦 矿工收集交易**：矿工会把一段时间内的交易打包成一个区块
+2. **📋 设置区块头**：区块头包含前一区块的哈希、默克尔根、时间戳、难度目标等信息，还有一个特殊的字段——**🎲 Nonce（随机数）**
+3. **🔢 计算哈希**：矿工会不断尝试不同的Nonce值，把区块头整体做SHA-256哈希运算
+4. **🎯 判断是否满足难度目标**：只有当算出来的哈希值小于当前网络设定的目标值（即有足够多的前导零），这个区块才算"有效"
+5. **📢 广播新区块**：第一个算出有效哈希的矿工会把新区块广播到全网，获得比特币奖励
 
 可以去感受一下[https://andersbrownworth.com/blockchain/block]
 
@@ -352,27 +360,23 @@ UTXO模型将比特币视为"🪙 硬币"的集合，而不是账户余额。每
 **UTXO模型的工作原理**：
 
 ```mermaid
-graph TB
-    subgraph 交易前状态
-        A1[UTXO #1<br/>地址A<br/>50 BTC<br/>未花费]
-        A2[UTXO #2<br/>地址A<br/>30 BTC<br/>未花费]
-        B1[UTXO #3<br/>地址B<br/>20 BTC<br/>未花费]
-    end
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'16px'}}}%%
+graph LR
+    U1["UTXO #1<br/>地址A: 50 BTC<br/>状态: 未花费"]
+    U2["UTXO #2<br/>地址A: 30 BTC<br/>状态: 未花费"]
+    U3["UTXO #3<br/>地址B: 20 BTC<br/>状态: 未花费"]
     
-    subgraph 地址余额
-        AA[地址A总余额: 80 BTC]
-        BB[地址B总余额: 20 BTC]
-    end
+    A["地址A总余额<br/>80 BTC"]
+    B["地址B总余额<br/>20 BTC"]
     
-    A1 -.->|累加| AA
-    A2 -.->|累加| AA
-    B1 -.->|累加| BB
+    U1 & U2 -.->|累加| A
+    U3 -.->|累加| B
     
-    style A1 fill:#e1f5e1
-    style A2 fill:#e1f5e1
-    style B1 fill:#ffe1e1
-    style AA fill:#d4edff
-    style BB fill:#ffd4d4
+    style U1 fill:#e1f5e1,stroke:#4caf50,stroke-width:2px
+    style U2 fill:#e1f5e1,stroke:#4caf50,stroke-width:2px
+    style U3 fill:#ffe1e1,stroke:#f44336,stroke-width:2px
+    style A fill:#d4edff,stroke:#2196f3,stroke-width:3px
+    style B fill:#ffd4d4,stroke:#ff9800,stroke-width:3px
 ```
 
 **🔑 UTXO模型的关键特点**：
@@ -386,27 +390,24 @@ graph TB
 **示例：Alice 向 Bob 支付 1 BTC**
 
 ```mermaid
-graph LR
-    I1["Alice的UTXO
-    1.2 BTC
-    已花费"] -->|消费| TX["交易
-    Alice → Bob
-    1 BTC"]
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'16px'}}}%%
+flowchart LR
+    Input["输入<br/>Alice的UTXO<br/>1.2 BTC<br/>✅ 已花费"]
     
-    TX -->|输出| O1["新UTXO #1
-    Bob
-    1 BTC
-    未花费"]
+    TX["交易<br/>Alice → Bob<br/>支付: 1 BTC"]
     
-    TX -->|找零| O2["新UTXO #2
-    Alice找零
-    0.2 BTC
-    未花费"]
+    Output1["输出1<br/>新UTXO #1<br/>Bob: 1 BTC<br/>⭕ 未花费"]
     
-    style I1 fill:#ffcccc,stroke:#ff6666,stroke-width:2px
-    style TX fill:#fff4cc,stroke:#ffcc00,stroke-width:2px
-    style O1 fill:#ccffcc,stroke:#66cc66,stroke-width:2px
-    style O2 fill:#ccffcc,stroke:#66cc66,stroke-width:2px
+    Output2["输出2<br/>新UTXO #2<br/>Alice找零: 0.2 BTC<br/>⭕ 未花费"]
+    
+    Input ==>|消费| TX
+    TX ==>|支付| Output1
+    TX ==>|找零| Output2
+    
+    style Input fill:#ffcccc,stroke:#e57373,stroke-width:3px
+    style TX fill:#fff4cc,stroke:#ffd54f,stroke-width:3px
+    style Output1 fill:#c8e6c9,stroke:#66bb6a,stroke-width:3px
+    style Output2 fill:#c8e6c9,stroke:#66bb6a,stroke-width:3px
 ```
 
 :::tip 🛡️ 双花防护总结
@@ -488,25 +489,26 @@ Merkle Proof是证明某个交易存在于区块中的路径证据，包含从�
 **✅ 轻节点验证步骤**：
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'15px'}}}%%
 flowchart TD
-    Start([轻节点接收数据<br/>TX3 + H4 + H12]) --> Step1[🔢 计算H3<br/>H3 = Hash TX3]
-    Step1 --> Step2[🔢 计算H34<br/>H34 = Hash H3 + H4]
-    Step2 --> Step3[🔢 计算Root_Calc<br/>Root_Calc = Hash H12 + H34]
-    Step3 --> Compare{🔍 比较<br/>Root_Calc<br/>==<br/>区块头默克尔根?}
-    Compare -->|✅ 相等| Valid[✅ 验证通过<br/>交易未被篡改]
-    Compare -->|❌ 不等| Invalid[❌ 验证失败<br/>交易或路径数据被篡改]
-    Valid --> End1([接受交易])
-    Invalid --> End2([拒绝交易])
+    Receive([📥 轻节点接收数据<br/>TX3 + H4 + H12]) --> Calc1[🔢 步骤1: 计算H3<br/>H3 = Hash TX3]
+    Calc1 --> Calc2[🔢 步骤2: 计算H34<br/>H34 = Hash H3 + H4]
+    Calc2 --> Calc3[🔢 步骤3: 计算Root_Calc<br/>Root_Calc = Hash H12 + H34]
+    Calc3 --> Compare{🔍 步骤4: 比较<br/>Root_Calc<br/>==<br/>区块头默克尔根?}
+    Compare -->|✅ 相等| Valid[✅ 验证通过<br/>交易未被篡改<br/>数据完整性确认]
+    Compare -->|❌ 不相等| Invalid[❌ 验证失败<br/>交易或路径数据被篡改<br/>拒绝该交易]
+    Valid --> Accept([✔️ 接受交易])
+    Invalid --> Reject([❌ 拒绝交易])
     
-    style Start fill:#e1f5e1
-    style Step1 fill:#fff4cc
-    style Step2 fill:#fff4cc
-    style Step3 fill:#fff4cc
-    style Compare fill:#ffd4d4
-    style Valid fill:#ccffcc
-    style Invalid fill:#ffcccc
-    style End1 fill:#ccffcc
-    style End2 fill:#ffcccc
+    style Receive fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+    style Calc1 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Calc2 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Calc3 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Compare fill:#ffcdd2,stroke:#f44336,stroke-width:3px
+    style Valid fill:#c8e6c9,stroke:#66bb6a,stroke-width:3px
+    style Invalid fill:#ffebee,stroke:#e57373,stroke-width:3px
+    style Accept fill:#a5d6a7,stroke:#4caf50,stroke-width:3px
+    style Reject fill:#ef9a9a,stroke:#f44336,stroke-width:3px
 ```
 
 **🚀 轻节点优势**：

@@ -6,6 +6,7 @@
 <script lang="ts" setup>
 import { useData } from "vitepress";
 const { theme } = useData();
+console.log(theme)
 </script>
 <style scoped>
 .content {
