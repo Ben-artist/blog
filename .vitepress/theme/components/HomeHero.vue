@@ -1,12 +1,11 @@
 <template>
   <div class="content">
-    <img :src="theme.avator" width="100" height="100" class="avator" />
+    <img :src="theme.logo" width="100" height="100" class="avator" />
   </div>
 </template>
 <script lang="ts" setup>
 import { useData } from "vitepress";
 const { theme } = useData();
-console.log(theme)
 </script>
 <style scoped>
 .content {

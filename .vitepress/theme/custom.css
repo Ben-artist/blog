@@ -51,3 +51,26 @@
 .VPDocOutlineDropdown {
   display: none !important;
 }
+
+/* 修复 Mermaid 图表样式冲突 */
+.vp-doc .mermaid {
+  line-height: normal !important;
+}
+
+.vp-doc .mermaid p {
+  line-height: normal !important;
+  margin: 0 !important;
+}
+
+/* 确保 Mermaid 图表有足够的空间 */
+.vp-doc pre.mermaid {
+  background: transparent !important;
+  padding: 0 !important;
+  line-height: normal !important;
+}
+
+/* Mermaid SVG 容器 */
+.vp-doc .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
