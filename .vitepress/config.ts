@@ -42,8 +42,7 @@ export default withMermaid({
     search: {
       provider: "local",
     },
-    // @ts-ignore,自定义属性
-    avator: "https://power-mall-2.oss-cn-beijing.aliyuncs.com/avator.png",
+    logo: "https://power-mall-2.oss-cn-beijing.aliyuncs.com/avator.png",
     posts: await getPosts(),
     pageSize: 5,
     postLength: await getPostLength(),

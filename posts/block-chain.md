@@ -151,14 +151,28 @@ PoW通过让参与者解决一个数学难题来证明他们投入了计算资�
 
 **PoW的基本流程**：
 
-<img src="../assets/images/block-chain/1.png" />
-
-
-1. **📦 矿工收集交易**：矿工会把一段时间内的交易打包成一个区块。
-2. **📋 设置区块头**：区块头包含前一区块的哈希、默克尔根、时间戳、难度目标等信息，还有一个特殊的字段——**🎲 Nonce（随机数）**。
-3. **🔢 计算哈希**：矿工会不断尝试不同的Nonce值，把区块头整体做SHA-256哈希运算。
-4. **判断哈希是否满足难度目标**：只有当算出来的哈希值小于当前网络设定的目标值（即有足够多的前导零），这个区块才算“有效”。
-5. **📢 广播新区块**：第一个算出有效哈希的矿工会把新区块广播到全网，获得比特币奖励。
+```mermaid
+flowchart TD
+    Start([开始挖矿]) --> Step1[📦 收集交易<br/>打包交易到区块]
+    Step1 --> Step2[📋 设置区块头<br/>前一区块哈希<br/>默克尔根<br/>时间戳<br/>难度目标<br/>Nonce=0]
+    Step2 --> Step3[🔢 计算哈希<br/>SHA-256区块头]
+    Step3 --> Check{🎯 哈希值<br/>< 目标值?}
+    Check -->|❌ 否| Increment[Nonce++<br/>尝试新的随机数]
+    Increment --> Step3
+    Check -->|✅ 是| Step4[📢 广播新区块<br/>发送到全网]
+    Step4 --> Reward[🎁 获得奖励<br/>新比特币 + 交易费]
+    Reward --> End([完成])
+    
+    style Start fill:#e1f5e1
+    style Step1 fill:#fff4cc
+    style Step2 fill:#fff4cc
+    style Step3 fill:#ffe1cc
+    style Check fill:#ffd4d4
+    style Increment fill:#ffcccc
+    style Step4 fill:#d4f1ff
+    style Reward fill:#ccffcc
+    style End fill:#e1f5e1
+```
 
 可以去感受一下[https://andersbrownworth.com/blockchain/block]
 
@@ -336,17 +350,29 @@ UTXO模型将比特币视为"🪙 硬币"的集合，而不是账户余额。每
 :::
 
 **UTXO模型的工作原理**：
-```
-交易前状态：
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│   UTXO #1       │  │   UTXO #2       │  │   UTXO #3       │
-│   地址A         │  │   地址A         │  │   地址B         │
-│   50 BTC        │  │   30 BTC        │  │   20 BTC        │
-│   未花费        │  │   未花费        │  │   未花费        │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
 
-地址A的总余额 = 50 + 30 = 80 BTC
-地址B的总余额 = 20 BTC
+```mermaid
+graph TB
+    subgraph 交易前状态
+        A1[UTXO #1<br/>地址A<br/>50 BTC<br/>未花费]
+        A2[UTXO #2<br/>地址A<br/>30 BTC<br/>未花费]
+        B1[UTXO #3<br/>地址B<br/>20 BTC<br/>未花费]
+    end
+    
+    subgraph 地址余额
+        AA[地址A总余额: 80 BTC]
+        BB[地址B总余额: 20 BTC]
+    end
+    
+    A1 -.->|累加| AA
+    A2 -.->|累加| AA
+    B1 -.->|累加| BB
+    
+    style A1 fill:#e1f5e1
+    style A2 fill:#e1f5e1
+    style B1 fill:#ffe1e1
+    style AA fill:#d4edff
+    style BB fill:#ffd4d4
 ```
 
 **🔑 UTXO模型的关键特点**：
@@ -357,17 +383,32 @@ UTXO模型将比特币视为"🪙 硬币"的集合，而不是账户余额。每
 4. **🛡️ 防双花**：每个UTXO只能被花费一次
 5. **👁️ 透明性**：所有UTXO的状态都是公开可查的
 
-​​示例​​：
+**示例：Alice 向 Bob 支付 1 BTC**
 
-Alice 向 Bob 支付 1 BTC：
-
-∙ 输入：Alice 引用自己之前收到的某笔 UTXO（如 1.2 BTC）。
-
-∙ 输出：
-
-∙ 新 UTXO 1：Bob 获得 1 BTC（可被其未来使用）。
-
-∙ 新 UTXO 2：Alice 获得 0.2 BTC 找零（作为新 UTXO 归属自己）。
+```mermaid
+graph LR
+    subgraph 输入
+        I1[Alice的UTXO<br/>1.2 BTC<br/>已花费]
+    end
+    
+    subgraph 交易处理
+        TX[交易<br/>Alice → Bob<br/>1 BTC]
+    end
+    
+    subgraph 输出
+        O1[新UTXO #1<br/>Bob<br/>1 BTC<br/>未花费]
+        O2[新UTXO #2<br/>Alice找零<br/>0.2 BTC<br/>未花费]
+    end
+    
+    I1 -->|消费| TX
+    TX -->|输出| O1
+    TX -->|找零| O2
+    
+    style I1 fill:#ffcccc
+    style TX fill:#fff4cc
+    style O1 fill:#ccffcc
+    style O2 fill:#ccffcc
+```
 
 :::tip 🛡️ 双花防护总结
 哈希指针链通过多重机制防止双花：
@@ -447,25 +488,26 @@ Merkle Proof是证明某个交易存在于区块中的路径证据，包含从�
 
 **✅ 轻节点验证步骤**：
 
-```
-轻节点接收数据
-        ↓
-    计算H3 = Hash(TX3)
-        ↓
-    计算H34 = Hash(H3 + H4)
-        ↓
-    计算Root_Calc = Hash(H12 + H34)
-        ↓
-    比较Root_Calc与区块头默克尔根
-        ↓
-    ┌─────────────────┬─────────────────┐
-    │    是否相等?    │                 │
-    ├─────────────────┼─────────────────┤
-    │       是        │       否        │
-    │        ↓        │        ↓        │
-    │   交易未被篡改   │  交易或路径数据  │
-    │                 │     被篡改      │
-    └─────────────────┴─────────────────┘
+```mermaid
+flowchart TD
+    Start([轻节点接收数据<br/>TX3 + H4 + H12]) --> Step1[🔢 计算H3<br/>H3 = Hash TX3]
+    Step1 --> Step2[🔢 计算H34<br/>H34 = Hash H3 + H4]
+    Step2 --> Step3[🔢 计算Root_Calc<br/>Root_Calc = Hash H12 + H34]
+    Step3 --> Compare{🔍 比较<br/>Root_Calc<br/>==<br/>区块头默克尔根?}
+    Compare -->|✅ 相等| Valid[✅ 验证通过<br/>交易未被篡改]
+    Compare -->|❌ 不等| Invalid[❌ 验证失败<br/>交易或路径数据被篡改]
+    Valid --> End1([接受交易])
+    Invalid --> End2([拒绝交易])
+    
+    style Start fill:#e1f5e1
+    style Step1 fill:#fff4cc
+    style Step2 fill:#fff4cc
+    style Step3 fill:#fff4cc
+    style Compare fill:#ffd4d4
+    style Valid fill:#ccffcc
+    style Invalid fill:#ffcccc
+    style End1 fill:#ccffcc
+    style End2 fill:#ffcccc
 ```
 
 **🚀 轻节点优势**：
