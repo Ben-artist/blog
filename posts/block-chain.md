@@ -387,27 +387,26 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph 输入
-        I1[Alice的UTXO<br/>1.2 BTC<br/>已花费]
-    end
+    I1["Alice的UTXO
+    1.2 BTC
+    已花费"] -->|消费| TX["交易
+    Alice → Bob
+    1 BTC"]
     
-    subgraph 交易处理
-        TX[交易<br/>Alice → Bob<br/>1 BTC]
-    end
+    TX -->|输出| O1["新UTXO #1
+    Bob
+    1 BTC
+    未花费"]
     
-    subgraph 输出
-        O1[新UTXO #1<br/>Bob<br/>1 BTC<br/>未花费]
-        O2[新UTXO #2<br/>Alice找零<br/>0.2 BTC<br/>未花费]
-    end
+    TX -->|找零| O2["新UTXO #2
+    Alice找零
+    0.2 BTC
+    未花费"]
     
-    I1 -->|消费| TX
-    TX -->|输出| O1
-    TX -->|找零| O2
-    
-    style I1 fill:#ffcccc
-    style TX fill:#fff4cc
-    style O1 fill:#ccffcc
-    style O2 fill:#ccffcc
+    style I1 fill:#ffcccc,stroke:#ff6666,stroke-width:2px
+    style TX fill:#fff4cc,stroke:#ffcc00,stroke-width:2px
+    style O1 fill:#ccffcc,stroke:#66cc66,stroke-width:2px
+    style O2 fill:#ccffcc,stroke:#66cc66,stroke-width:2px
 ```
 
 :::tip 🛡️ 双花防护总结
