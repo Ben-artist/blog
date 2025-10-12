@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           source: ".vitepress/dist/"
-          target: "/usr/local/nginx/html/"
+          target: "/usr/local/nginx/html/blog"
           strip_components: 2
           overwrite: true
 
