@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiber 调度器与优先级演示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-immediate { background: #ff4444; color: white; }
+    .btn-user-blocking { background: #ff8800; color: white; }
+    .btn-normal { background: #0088ff; color: white; }
+    .btn-low { background: #888888; color: white; }
+    .btn-idle { background: #00aa00; color: white; }
+    .info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fiber 调度器与优先级演示</h1>
+    <p>点击不同按钮，体验不同优先级的渲染效果：</p>
+    
+    <button class="btn-immediate" onclick="renderWithPriority(Priority.Immediate)">
+      立即优先级 (Immediate)
+    </button>
+    <button class="btn-user-blocking" onclick="renderWithPriority(Priority.UserBlocking)">
+      用户阻塞 (UserBlocking)
+    </button>
+    <button class="btn-normal" onclick="renderWithPriority(Priority.Normal)">
+      正常优先级 (Normal)
+    </button>
+    <button class="btn-low" onclick="renderWithPriority(Priority.Low)">
+      低优先级 (Low)
+    </button>
+    <button class="btn-idle" onclick="renderWithPriority(Priority.Idle)">
+      空闲优先级 (Idle)
+    </button>
+    
+    <div class="info" id="info">
+      点击按钮开始渲染，观察不同优先级的表现
+    </div>
+  </div>
+  
+  <div id="root"></div>
+  
+  <!-- 引入 createElement 函数 -->
+  <script src="createElement.js"></script>
+  <!-- 引入调度器和优先级系统 -->
+  <script src="react-dom.js"></script>
+  
+  <script>
+    // 创建大量元素用于测试优先级调度
+    function createLargeElement(count) {
+      const items = [];
+      for (let i = 0; i < count; i++) {
+        items.push(
+          createElement('div', {
+            style: `padding: 5px; margin: 2px; background: #${Math.floor(Math.random()*16777215).toString(16)}; color: white;`
+          }, `Item ${i + 1}`)
+        );
+      }
+      return createElement(
+        'div',
+        { style: 'padding: 20px;' },
+        createElement('h2', null, `渲染了 ${count} 个元素`),
+        ...items
+      );
+    }
+    
+    // 根据优先级渲染
+    function renderWithPriority(priority) {
+      const container = document.getElementById('root');
+      const info = document.getElementById('info');
+      
+      // 清空容器
+      container.innerHTML = '';
+      
+      const priorityNames = {
+        [Priority.Immediate]: '立即优先级',
+        [Priority.UserBlocking]: '用户阻塞',
+        [Priority.Normal]: '正常优先级',
+        [Priority.Low]: '低优先级',
+        [Priority.Idle]: '空闲优先级',
+      };
+      
+      const startTime = Date.now();
+      info.textContent = `开始渲染（${priorityNames[priority]}）...`;
+      
+      // 创建虚拟 DOM（使用较少的元素以便观察）
+      const virtualElement = createLargeElement(50);
+      
+      // 渲染
+      renderToDOM(virtualElement, container, priority);
+      
+      // 监听渲染完成（简化版，实际应该通过回调）
+      setTimeout(() => {
+        const endTime = Date.now();
+        info.textContent = `渲染完成（${priorityNames[priority]}），耗时: ${endTime - startTime}ms`;
+      }, 100);
+    }
+    
+    // 默认渲染
+    renderWithPriority(Priority.Normal);
+    
+    console.log('优先级系统已加载：', Priority);
+    console.log('使用说明：');
+    console.log('- Immediate: 同步执行，会阻塞主线程');
+    console.log('- UserBlocking: 用户交互优先级，快速响应');
+    console.log('- Normal: 默认优先级，平衡性能和响应性');
+    console.log('- Low: 低优先级，可以延迟执行');
+    console.log('- Idle: 空闲时执行，不阻塞其他任务');
+  </script>
+</body>
+</html>
