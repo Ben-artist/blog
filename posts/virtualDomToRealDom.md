@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: Vue3系列 - 虚拟DOM到真实DOM
 date: 2025-03-01
+description: '循序渐进讲解 Vue 3 中虚拟 DOM 如何挂载并更新为真实 DOM。'
 tags: ['JavaScript', '虚拟DOM', 'DOM']
 ---
 

@@ -1,4 +1,5 @@
 ---
+collection: algorithms
 title: 算法详解 - 链表两数相加问题
 date: 2025-03-13
 tags: ['算法', '链表', '数据结构', 'LeetCode']

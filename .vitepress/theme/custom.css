@@ -1,60 +1,215 @@
-@font-face {
-  font-family: "Rubik";
-  src: url("../../assets/fonts/Rubik/static/Rubik-Medium.ttf")
-    format("truetype");
-}
-:root {
-  --vp-c-brand: #a27b5c;
-  --vp-c-brand-light: #a27b5c;
-  --vp-c-brand-dark: #a27b5c;
-  --vp-c-hover: #212121;
-  --vp-c-bg: #faf6f1;
-  --vp-c-bg-alpha-with-backdrop: rgba(250, 246, 241, 0.7);
+@import "./tokens.css";
 
-  --vp-c-color-b: #26ccff;
-  --vp-c-color-c: #0cb9ed;
-  --vp-c-color-d: #a15000;
-  --vp-c-color-e: #ed7c0c;
+/* ─── Base & page atmosphere ─── */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
 
-  --vp-font-family-base: "Rubik", "Inter var experimental",
-    "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  --vp-font-family-mono: "Rubik", ui-monospace, SFMono-Regular,
-    "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-    monospace;
-  --vp-avator-border: #ffffff;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-.dark {
-  --vp-c-bg: #2c3639;
-  --vp-c-text: white;
-  --vp-c-hover: #ffffff;
-  --vp-c-bg-alpha-with-backdrop: rgba(44, 54, 57, 0.7);
-  --vp-avator-border: #3f4e4f;
-}
+
+body,
 #app {
   min-height: 100vh;
-  position: relative;
 }
 
 .theme {
-  background-color: var(--vp-c-bg);
+  font-size: var(--tsk-font-base);
+  background-color: var(--tsk-bg);
 }
+
+/* ─── Nav: airy bar + link icons ─── */
+.VPNav {
+  backdrop-filter: blur(12px) saturate(1.2);
+  border-bottom: 1px solid var(--tsk-border);
+  transition: box-shadow var(--tsk-duration-normal) var(--tsk-ease-out);
+}
+
+.VPNav.has-sidebar {
+  box-shadow: var(--tsk-shadow-xs);
+}
+
+.VPNavBarTitle .title {
+  font-family: var(--tsk-font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.VPNavBarMenuLink {
+  font-weight: 450;
+  font-size: var(--tsk-font-sm);
+  color: var(--tsk-text-muted);
+  transition: color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.VPNavBarMenuLink:hover,
+.VPNavBarMenuLink.is-active {
+  color: var(--tsk-text);
+}
+
+/* ─── Home: custom layout only ─── */
 .VPHome {
-  margin-bottom: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.VPHome .VPHero,
+.VPHome .VPFeatures {
+  display: none !important;
+}
+
+.VPHome .VPContent {
+  padding-top: 0;
+}
+
+/* ─── Doc content: editorial rhythm ─── */
+.vp-doc {
+  font-size: max(var(--tsk-font-min), 1.02rem);
+  line-height: 1.78;
+  letter-spacing: 0.01em;
+}
+
+.vp-doc :where(p, li, td, th, blockquote, figcaption, .vp-doc-footer) {
+  font-size: max(var(--tsk-font-min), 1em);
+}
+
+.vp-doc :where(.vp-code-group .tabs label, .custom-block-title) {
+  font-size: max(var(--tsk-font-min), 0.875rem);
+}
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  font-family: var(--tsk-font-display);
+  letter-spacing: -0.02em;
 }
 
 .vp-doc h2 {
-  margin-top: 0;
+  margin-top: 2.5em;
+  padding-top: 0;
   border-top: none;
+  font-weight: 600;
 }
 
+.vp-doc a {
+  text-underline-offset: 3px;
+  transition: color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.vp-doc img {
+  border-radius: var(--tsk-radius-sm);
+}
+
+.vp-doc pre,
+.vp-doc code {
+  border-radius: var(--tsk-radius-sm);
+}
+
+/* 表格：避免首列过窄导致中文逐字折行 */
+.vp-doc table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.vp-doc th,
+.vp-doc td {
+  word-break: keep-all;
+  vertical-align: top;
+}
+
+.vp-doc th:first-child,
+.vp-doc td:first-child {
+  min-width: 5.5em;
+  white-space: nowrap;
+}
+
+/* ─── Shared TSK surfaces ─── */
+.tsk-section {
+  width: min(100% - 2rem, 42rem);
+  margin-inline: auto;
+}
+
+.tsk-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tsk-space-4);
+  margin-bottom: var(--tsk-space-5);
+}
+
+.VPFooter,
+.VPNavBarTitle .title,
+.VPLocalSearchBox {
+  font-size: max(var(--tsk-font-min), 1em);
+}
+
+.tsk-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  font-family: var(--tsk-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--tsk-text);
+}
+
+.tsk-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--tsk-font-sm);
+  font-weight: 500;
+  color: var(--tsk-accent);
+  text-decoration: none;
+  transition: gap var(--tsk-duration-fast) var(--tsk-ease-out),
+    color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.tsk-section-link:hover {
+  gap: 0.55rem;
+  color: var(--tsk-accent-hover);
+  text-decoration: none;
+}
+
+.tsk-card {
+  display: block;
+  padding: var(--tsk-space-4) var(--tsk-space-5);
+  border-radius: var(--tsk-radius-sm);
+  border: 1px solid var(--tsk-border);
+  background: var(--tsk-bg-elevated);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.tsk-card:hover {
+  border-color: var(--tsk-border-strong);
+  text-decoration: none;
+}
+
+/* ─── Category TOC ─── */
 .VPDocOutlineDropdown {
   display: none !important;
 }
 
-/* 修复 Mermaid 图表样式冲突 */
-.vp-doc .mermaid {
+/* ─── Mermaid ─── */
+.vp-doc .mermaid,
+.vp-doc .mermaid-container {
   line-height: normal !important;
+  margin: var(--tsk-space-6) 0;
 }
 
 .vp-doc .mermaid p {
@@ -62,15 +217,62 @@
   margin: 0 !important;
 }
 
-/* 确保 Mermaid 图表有足够的空间 */
 .vp-doc pre.mermaid {
   background: transparent !important;
   padding: 0 !important;
-  line-height: normal !important;
 }
 
-/* Mermaid SVG 容器 */
-.vp-doc .mermaid svg {
+.vp-doc .mermaid svg,
+.mermaid-container .mermaid-svg {
   max-width: 100%;
   height: auto;
+  border-radius: var(--tsk-radius-md);
+}
+
+/* ─── 信息助手全屏嵌入页（避开固定顶栏） ─── */
+.info-page .VPContent,
+.info-page .VPDoc,
+.info-page .VPDoc .container,
+.info-page .VPDoc .content,
+.info-page .vp-doc {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+/* 固定定位：紧贴导航栏下方铺满视口，避免内容被顶栏遮挡 */
+.info-page .info-shell {
+  position: fixed;
+  inset: var(--vp-nav-height) 0 0 0;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  background: var(--tsk-bg);
+}
+
+.info-page .info-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.info-page .VPFooter,
+.info-page .VPDoc .aside,
+.info-page .VPDocOutlineDropdown {
+  display: none !important;
+}
+
+/* ─── Footer ─── */
+.VPFooter {
+  border-top: 1px solid var(--tsk-border);
+  padding-block: var(--tsk-space-6);
+  background: transparent;
+}
+
+/* ─── Search modal polish ─── */
+.VPLocalSearchBox {
+  border-radius: var(--tsk-radius-lg);
 }

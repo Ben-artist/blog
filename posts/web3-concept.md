@@ -1,4 +1,5 @@
 ---
+collection: web3
 title: Web3核心概念：从区块链基础到Uniswap流动性机制
 date: 2025-10-11
 tags: ['Web3', 'DeFi', 'Uniswap', '流动性', 'AMM', '区块链', '钱包']

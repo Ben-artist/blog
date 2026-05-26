@@ -1,4 +1,5 @@
 ---
+collection: engineering
 title: 函数式编程：从数学思维到现代软件开发
 date: 2025-06-20
 tags: ['函数式编程', '编程范式', 'JavaScript', '函数式思维']

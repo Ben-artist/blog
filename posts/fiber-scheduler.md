@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: React Fiber 调度器原理深度解析：从零理解可中断渲染与优先级调度
 date: 2025-11-20
+description: '深入 React Fiber 调度器：可中断渲染、优先级调度与时间切片机制。'
 tags: ['React', 'Fiber', '调度器', '优先级', '时间切片', '源码解析']
 ---
 

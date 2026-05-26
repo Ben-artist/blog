@@ -1,142 +1,195 @@
 <template>
-  <div class="main">
-    <h1 class="tags-header">Tags</h1>
-    <div class="tags">
-      <span
-        @click="toggleTag(key)"
+  <div class="tags-page tsk-fade-in">
+    <header class="page-header">
+      <h1>
+        <Icon name="tag" :size="28" />
+        标签
+      </h1>
+      <p>按主题标签筛选文章</p>
+    </header>
+
+    <div class="tag-cloud" role="list">
+      <button
         v-for="(item, key) in data"
-        class="tag"
+        :key="key"
+        type="button"
+        class="tag-pill"
+        :class="{ active: selectTag === key }"
         :style="getFontSize(data[key].length)"
-        :class="{ activetag: selectTag === key }"
+        @click="toggleTag(key as string)"
       >
-        {{ key }} <span class="tag-length">{{ data[key].length }}</span>
-      </span>
+        {{ key }}
+        <span class="tag-count">{{ data[key].length }}</span>
+      </button>
     </div>
 
-    <h4 class="header" v-show="selectTag">
-      <svg
-        t="1641783753540"
-        class="fas-icon"
-        viewBox="0 0 1024 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        p-id="1254"
-        :style="{
-          width: '20px',
-        }"
-      >
-        <path
-          d="M995.126867 592.38l-360.08 360.08a53.333333 53.333333 0 0 1-71.333334 3.68l356.22-356.22a64 64 0 0 0 0-90.506667L495.8402 85.333333h45.573333a52.986667 52.986667 0 0 1 37.713334 15.62l416 416a53.4 53.4 0 0 1 0 75.426667z m-128 0l-360.08 360.08a53.333333 53.333333 0 0 1-75.426667 0l-416-416A52.986667 52.986667 0 0 1 0.0002 498.746667V138.666667a53.393333 53.393333 0 0 1 53.333333-53.333334h360.08a52.986667 52.986667 0 0 1 37.713334 15.62l416 416a53.4 53.4 0 0 1 0 75.426667zM341.333533 341.333333a85.333333 85.333333 0 1 0-85.333333 85.333334 85.426667 85.426667 0 0 0 85.333333-85.333334z"
-          fill="var(--vp-c-brand)"
-          p-id="1255"
-        ></path>
-      </svg>
-      <span class="header-text">{{ selectTag }}</span>
-    </h4>
-    <a
-      :href="withBase(article.regularPath)"
-      v-for="(article, index) in data[selectTag]"
-      :key="index"
-      class="article"
-    >
-      <div class="title">
-        <div class="title-o"></div>
-        {{ article.frontMatter.title }}
-      </div>
-      <div class="date">{{ article.frontMatter.date }}</div>
-    </a>
+    <section v-show="selectTag" class="tag-results">
+      <h2 class="results-heading">
+        <Icon name="folder" :size="18" />
+        {{ selectTag }}
+      </h2>
+      <ul class="article-list">
+        <li
+          v-for="(article, index) in data[selectTag]"
+          :key="article.regularPath"
+        >
+          <a
+            :href="withBase(article.regularPath)"
+            class="article-row"
+            :style="{ animationDelay: `${index * 40}ms` }"
+          >
+            <span class="article-title">{{ article.frontMatter.title }}</span>
+            <time class="article-date">{{ article.frontMatter.date }}</time>
+          </a>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
-<script lang="ts" setup>
+
+<script setup lang="ts">
 import { computed, ref } from "vue";
 import { useData, withBase } from "vitepress";
 import { initTags } from "../utils";
+import Icon from "./Icon.vue";
 
 const { theme } = useData();
 const data = computed(() => initTags(theme.value.posts));
-let selectTag = ref("");
-const toggleTag = (tag: string) => {
-  selectTag.value = tag;
-};
-// set font-size
-const getFontSize = (length: number) => {
-  let size = length * 0.04 + 0.85;
-  return { fontSize: `${size}em` };
-};
+const selectTag = ref("");
+
+function toggleTag(tag: string) {
+  selectTag.value = selectTag.value === tag ? "" : tag;
+}
+
+/** 标签云字号：文章越多字号略大 */
+function getFontSize(length: number) {
+  const size = Math.min(1.15, length * 0.04 + 0.88);
+  return { fontSize: `${size}rem` };
+}
 </script>
 
 <style scoped>
-.main {
+.tags-page {
   margin: 0 auto;
-  padding: 0.5rem 1.5rem 4rem;
-  max-width: 48rem;
+  padding: var(--tsk-space-5) var(--tsk-space-5) var(--tsk-space-8);
+  max-width: 44rem;
 }
-.tags-header {
-  font-weight: bold;
-  padding-bottom: 14px;
-  font-size: 2.25em;
-  margin-top: 24px;
+
+.page-header {
+  margin-bottom: var(--tsk-space-6);
+  text-align: center;
 }
-.tags {
-  margin-top: 14px;
+
+.page-header h1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 var(--tsk-space-2);
+  font-family: var(--tsk-font-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--tsk-text-muted);
+}
+
+.tag-cloud {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: left;
+  gap: 0.55rem;
+  margin-bottom: var(--tsk-space-6);
+  padding-bottom: var(--tsk-space-6);
+  border-bottom: 1px solid var(--tsk-border);
+}
 
-  border-bottom: 1px dashed #c7c7c7;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-}
-.tag {
-  display: inline-block;
-  margin: 6px 8px;
-  font-size: 0.85em;
-  line-height: 25px;
-  transition: 0.4s;
-  color: #a1a1a1;
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--tsk-text-muted);
+  background: var(--tsk-bg-elevated);
+  border: 1px solid var(--tsk-border);
+  border-radius: var(--tsk-radius-full);
   cursor: pointer;
+  transition:
+    transform var(--tsk-duration-fast) var(--tsk-ease-out),
+    color var(--tsk-duration-fast) var(--tsk-ease-out),
+    background var(--tsk-duration-fast) var(--tsk-ease-out),
+    border-color var(--tsk-duration-fast) var(--tsk-ease-out);
 }
-.tag:hover {
-  color: var(--vp-c-hover);
+
+.tag-pill:hover {
+  color: var(--tsk-accent);
+  border-color: var(--tsk-accent-glow);
+  transform: translateY(-1px);
 }
-.activetag {
-  color: var(--vp-c-hover);
+
+.tag-pill.active {
+  color: var(--tsk-bg-elevated);
+  background: var(--tsk-accent);
+  border-color: var(--tsk-accent);
 }
-.tag-length {
-  color: var(--vp-c-brand);
-  font-size: 12px !important;
-  position: relative;
-  top: -8px;
+
+.tag-count {
+  font-size: var(--tsk-font-sm);
+  opacity: 0.75;
 }
-.header {
-  font-size: 1rem;
+
+.results-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 var(--tsk-space-4);
+  font-family: var(--tsk-font-display);
+  font-size: 1.15rem;
   font-weight: 600;
-  margin: 1.5rem 0;
+}
+
+.article-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.article-row {
   display: flex;
-  align-items: center;
-  justify-content: left;
-}
-.fas-icon {
-  width: 2rem;
-  height: 2rem;
-}
-.header-text {
-  padding-left: 10px;
-}
-.article {
-  display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  margin: 10px 10px;
-  color: var(--vp-c-text-2);
-  transition: border 0.3s ease, color 0.3s ease;
-}
-.article:hover {
+  gap: var(--tsk-space-4);
+  padding: 0.75rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: var(--tsk-radius-sm);
+  color: var(--tsk-text-muted);
   text-decoration: none;
-  color: var(--vp-c-brand);
+  animation: tsk-fade-up var(--tsk-duration-slow) var(--tsk-ease-out) both;
+  transition:
+    color var(--tsk-duration-fast) var(--tsk-ease-out),
+    background var(--tsk-duration-fast) var(--tsk-ease-out);
 }
-.date {
-  font-family: Georgia, sans-serif;
+
+.article-row:hover {
+  color: var(--tsk-accent);
+  background: var(--tsk-accent-soft);
+  text-decoration: none;
+}
+
+.article-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.article-date {
+  flex-shrink: 0;
+  font-size: var(--tsk-font-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--tsk-text-subtle);
 }
 </style>

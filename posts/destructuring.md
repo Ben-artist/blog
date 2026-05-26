@@ -1,6 +1,8 @@
 ---
+collection: browser-javascript
 title: 深入理解解构赋值及其原理
 date: 2024-03-12
+description: '深入理解 ES6 解构赋值的语法模式、常见用法及 Babel 编译原理。'
 tags: ['JavaScript', '解构赋值', 'Babel']
 ---
 

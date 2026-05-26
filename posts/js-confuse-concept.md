@@ -1,4 +1,5 @@
 ---
+collection: browser-javascript
 title: JavaScript 中令人迷惑的语法
 date: 2025-07-31
 tags: ['JavaScript', 'ES6', '语法解析', '编程技巧']

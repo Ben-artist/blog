@@ -1,6 +1,8 @@
 ---
+collection: engineering
 title: TS系列 - 从设计者的角度理解TypeScript
 date: 2025-03-07
+description: '从语言设计者视角理解 TypeScript 类型系统，对比 interface 与 type 的设计意图。'
 tags: ["TypeScript", "类型系统", "前端开发"]
 ---
 

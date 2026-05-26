@@ -1,4 +1,5 @@
 ---
+collection: engineering
 title: pnpm深度解析：现代包管理器的革命性突破
 date: 2025-03-13
 tags: ['包管理器', 'pnpm', 'npm', 'yarn', '前端工程化']

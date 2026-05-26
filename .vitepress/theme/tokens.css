@@ -1,0 +1,131 @@
+/**
+ * Editorial design tokens — warm neutrals, generous rhythm, soft depth.
+ */
+:root {
+  /* Typography */
+  --tsk-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --tsk-font-body: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --tsk-font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /** 全站最小可读字号（勿低于 14px） */
+  --tsk-font-min: 14px;
+  --tsk-font-sm: 0.875rem;
+  --tsk-font-base: 1rem;
+
+  /* Spacing scale */
+  --tsk-space-1: 0.25rem;
+  --tsk-space-2: 0.5rem;
+  --tsk-space-3: 0.75rem;
+  --tsk-space-4: 1rem;
+  --tsk-space-5: 1.5rem;
+  --tsk-space-6: 2rem;
+  --tsk-space-7: 2.75rem;
+  --tsk-space-8: 4rem;
+
+  /* Radii */
+  --tsk-radius-sm: 8px;
+  --tsk-radius-md: 14px;
+  --tsk-radius-lg: 20px;
+  --tsk-radius-full: 999px;
+
+  /* Motion */
+  --tsk-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --tsk-ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --tsk-duration-fast: 180ms;
+  --tsk-duration-normal: 320ms;
+  --tsk-duration-slow: 560ms;
+
+  /* Surfaces — tinted neutrals (no pure white/black) */
+  --tsk-bg: #f7f5f2;
+  --tsk-bg-elevated: #fdfcfa;
+  --tsk-bg-muted: #efeae3;
+  --tsk-border: rgba(38, 36, 33, 0.1);
+  --tsk-border-strong: rgba(38, 36, 33, 0.16);
+
+  --tsk-text: #262421;
+  --tsk-text-muted: #5c5852;
+  --tsk-text-subtle: #8a847c;
+
+  --tsk-accent: #3d5a80;
+  --tsk-accent-hover: #2f4766;
+  --tsk-accent-soft: rgba(61, 90, 128, 0.1);
+  --tsk-accent-glow: rgba(61, 90, 128, 0.22);
+
+  --tsk-warm: #c17f59;
+  --tsk-warm-soft: rgba(193, 127, 89, 0.12);
+
+  /* Shadows — kept subtle for minimal UI */
+  --tsk-shadow-xs: none;
+  --tsk-shadow-sm: none;
+  --tsk-shadow-md: 0 8px 24px rgba(38, 36, 33, 0.06);
+  --tsk-shadow-lg: 0 12px 32px rgba(38, 36, 33, 0.08);
+
+  /* VitePress bridge */
+  --vp-c-brand: var(--tsk-accent);
+  --vp-c-brand-1: var(--tsk-accent);
+  --vp-c-brand-2: var(--tsk-accent-hover);
+  --vp-c-brand-3: var(--tsk-accent-hover);
+  --vp-c-brand-soft: var(--tsk-accent-soft);
+
+  --vp-c-bg: var(--tsk-bg);
+  --vp-c-bg-alt: var(--tsk-bg-muted);
+  --vp-c-bg-elv: var(--tsk-bg-elevated);
+  --vp-c-bg-soft: var(--tsk-bg-muted);
+
+  --vp-c-text-1: var(--tsk-text);
+  --vp-c-text-2: var(--tsk-text-muted);
+  --vp-c-text-3: var(--tsk-text-subtle);
+
+  --vp-c-divider: var(--tsk-border);
+  --vp-c-border: var(--tsk-border);
+  --vp-c-gutter: var(--tsk-border);
+
+  --vp-c-default-1: var(--tsk-text);
+  --vp-c-default-2: var(--tsk-text-muted);
+  --vp-c-default-3: var(--tsk-text-subtle);
+
+  --vp-font-family-base: var(--tsk-font-body);
+  --vp-font-family-mono: var(--tsk-font-mono);
+
+  --vp-nav-height: 64px;
+  --vp-layout-max-width: 920px;
+  --vp-home-hero-name-color: var(--tsk-text);
+  --vp-home-hero-text-color: var(--tsk-text-muted);
+  --vp-home-hero-image-background-image: none;
+
+  --vp-button-brand-bg: var(--tsk-accent);
+  --vp-button-brand-hover-bg: var(--tsk-accent-hover);
+  --vp-button-brand-active-bg: var(--tsk-accent-hover);
+
+  --vp-custom-block-info-bg: var(--tsk-accent-soft);
+  --vp-custom-block-info-border: var(--tsk-accent-glow);
+
+  --vp-avator-border: var(--tsk-bg-elevated);
+  --vp-c-bg-alpha-with-backdrop: rgba(247, 245, 242, 0.82);
+
+  --vp-c-color-d: var(--tsk-warm);
+}
+
+.dark {
+  --tsk-bg: #1a1d21;
+  --tsk-bg-elevated: #22262b;
+  --tsk-bg-muted: #2a2f35;
+  --tsk-border: rgba(245, 243, 240, 0.08);
+  --tsk-border-strong: rgba(245, 243, 240, 0.14);
+
+  --tsk-text: #f0ede8;
+  --tsk-text-muted: #b8b3ab;
+  --tsk-text-subtle: #8a857d;
+
+  --tsk-accent: #7ba3d4;
+  --tsk-accent-hover: #9ab8e0;
+  --tsk-accent-soft: rgba(123, 163, 212, 0.12);
+  --tsk-accent-glow: rgba(123, 163, 212, 0.25);
+
+  --tsk-warm: #d4a088;
+  --tsk-warm-soft: rgba(212, 160, 136, 0.14);
+
+  --vp-c-bg-alpha-with-backdrop: rgba(26, 29, 33, 0.85);
+  --vp-avator-border: var(--tsk-bg-elevated);
+}

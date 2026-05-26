@@ -1,4 +1,5 @@
 ---
+collection: browser-javascript
 title: 浏览器渲染中的合成层（Composite Layers）详解
 date: 2025-03-14
 tags: ['浏览器渲染', '合成层', '性能优化', 'GPU加速']

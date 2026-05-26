@@ -1,6 +1,8 @@
 ---
+collection: network-security
 title: 深入理解Nginx
 date: 2024-03-13
+description: '理解 Nginx 核心架构、反向代理、负载均衡与常用配置实践。'
 tags: ['Nginx', '服务器', '反向代理']
 ---
 

@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: React实现原理深度解析：从零理解Fiber架构与Hooks机制
 date: 2025-11-16
+description: '基于 mini-react 项目，解析 Fiber 架构、Hooks、虚拟 DOM 与 Diff 实现。'
 tags: ['React', 'Fiber', 'Hooks', '虚拟DOM', '源码解析']
 ---
 

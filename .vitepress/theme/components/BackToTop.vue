@@ -1,45 +1,87 @@
 <template>
-  <div v-if="isVisible" class="back-to-top" @click="scrollToTop">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-to-line"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
-</div>  
+  <Transition name="tsk-back-top">
+    <button
+      v-show="isVisible"
+      type="button"
+      class="back-top"
+      aria-label="Back to top"
+      @click="scrollToTop"
+    >
+      <Icon name="arrow-up" :size="20" />
+    </button>
+  </Transition>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      isVisible: false,
-    };
-  },
-  methods: {
-    handleScroll() {
-      this.isVisible = window.scrollY > 200; // 当滚动超过200px时显示按钮
-    },
-    scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // 平滑滚动到顶部
-    },
-  },
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-};
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from "vue";
+import Icon from "./Icon.vue";
+
+const isVisible = ref(false);
+
+function handleScroll() {
+  isVisible.value = window.scrollY > 320;
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <style scoped>
-.back-to-top {
+.back-top {
   position: fixed;
-  bottom: 100px;
-  right: 100px;
-  font-size: 24px;
-  color: #fff;
-  background-color: #3aaacf;
-  padding: 10px;
-  border-radius: 10px;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--tsk-border);
+  border-radius: var(--tsk-radius-full);
+  background: var(--tsk-bg-elevated);
+  color: var(--tsk-accent);
   cursor: pointer;
-  z-index: 1000; /* 确保按钮在其他元素之上 */
-  font-size: 24px; /* 增大箭头的字体大小 */
+  box-shadow: var(--tsk-shadow-md);
+  transition:
+    transform var(--tsk-duration-fast) var(--tsk-ease-spring),
+    background var(--tsk-duration-fast) var(--tsk-ease-out),
+    color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.back-top:hover {
+  background: var(--tsk-accent-soft);
+  color: var(--tsk-accent);
+}
+
+.tsk-back-top-enter-active,
+.tsk-back-top-leave-active {
+  transition:
+    opacity var(--tsk-duration-normal) var(--tsk-ease-out),
+    transform var(--tsk-duration-normal) var(--tsk-ease-out);
+}
+
+.tsk-back-top-enter-from,
+.tsk-back-top-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+}
+
+@media (max-width: 640px) {
+  .back-top {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
 }
 </style>

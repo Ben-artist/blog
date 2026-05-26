@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@shikijs/vitepress-twoslash": "^3.2.1",
+    "@unify-js/vitepress-mermaid": "1.0.2",
     "dayjs": "^1.11.10",
     "fast-glob": "^3.3.2",
     "feed": "^4.2.2",
@@ -20,13 +21,12 @@
     "globby": "14.0.0",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0",
+    "mermaid": "11.15.0",
     "shiki": "^3.2.1",
-    "vitepress": "2.0.0-alpha.11",
-    "vitepress-plugin-mermaid": "^2.0.17"
+    "vitepress": "2.0.0-alpha.11"
   },
   "dependencies": {
     "busuanzi.pure.js": "^1.0.3",
-    "gitalk": "^1.8.0",
     "medium-zoom": "^1.1.0"
   }
 }

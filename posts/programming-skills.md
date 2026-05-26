@@ -1,6 +1,8 @@
 ---
+collection: engineering
 title: 日常编程技巧
 date: 2025-03-07
+description: '记录日常开发中实用的编程技巧与常见模式，即查即用。'
 tags: ['TypeScript', '类型系统', '前端开发']
 ---
 

@@ -1,78 +1,117 @@
 <template>
-  <div class="category" v-if="headers.length > 0">
-    <ul class="list">
-      <li class="header" v-for="item in headers" :key="item.title">
-        <a :href="item.link" class="header-h2" v-if="item.level === 2">{{
-          item.title
-        }}</a>
-        <ul v-if="item.level === 3">
-          <li class="header">
-            <a
-              :href="item.link"
-              :class="['header-h3', { showIndent: showIndent }]"
-              >{{ item.title }}</a
-            >
-          </li>
-        </ul>
-      </li>
+  <nav
+    v-if="headers.length > 0"
+    class="toc tsk-fade-in"
+    aria-label="Table of contents"
+  >
+    <p class="toc-label">
+      <Icon name="layers" :size="15" />
+      On this page
+    </p>
+    <ul class="toc-list">
+      <template v-for="item in headers" :key="item.link">
+        <li v-if="item.level === 2" class="toc-item">
+          <a :href="item.link" class="toc-link toc-h2">{{ item.title }}</a>
+        </li>
+        <li v-else-if="item.level === 3" class="toc-item toc-item-nested">
+          <a :href="item.link" class="toc-link toc-h3">{{ item.title }}</a>
+        </li>
+      </template>
     </ul>
-  </div>
+  </nav>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useData, onContentUpdated } from "vitepress";
-import { shallowRef, ref } from "vue";
+import { shallowRef } from "vue";
 import { getHeaders } from "../utils";
+import Icon from "./Icon.vue";
 
 const { frontmatter, theme } = useData();
-const headers = shallowRef<any>([]);
-const showIndent = ref(false);
+const headers = shallowRef<{ title: string; link: string; level: number }[]>([]);
+
 onContentUpdated(() => {
   headers.value = getHeaders(frontmatter.value.outline ?? theme.value.outline);
-  showIndent.value = headers.value.some((header) => {
-    return header.level === 2;
-  });
 });
 </script>
 
 <style scoped>
-.category {
-  width: 20rem; /* 保持宽度 */
-  background: var(--vp-c-bg);
-  box-shadow: 6px 6px var(--vp-c-brand);
-  border: 4px solid #3f4e4f;
-  color: var(--vp-c-brand-light);
-  overflow-y: auto; 
-  max-height: 80vh;
+.toc {
+  width: 16rem;
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  padding: var(--tsk-space-4);
+  border-radius: var(--tsk-radius-md);
+  border: 1px solid var(--tsk-border);
+  background: var(--tsk-bg-elevated);
+  box-shadow: var(--tsk-shadow-sm);
 }
 
-.list {
-  padding-left: 1.25em;
-  margin: 1rem 0;
-  line-height: 1.7;
-  list-style-type: none;
-  box-sizing: border-box;
+.toc-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 var(--tsk-space-3);
+  font-size: var(--tsk-font-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tsk-text-subtle);
 }
 
-.showIndent {
-  padding-left: 1rem;
+.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-ul {
-  list-style-type: none;
+.toc-item-nested {
+  padding-left: 0.85rem;
 }
 
-.header {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.toc-link {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  font-size: var(--tsk-font-sm);
+  line-height: 1.4;
+  color: var(--tsk-text-muted);
+  text-decoration: none;
+  border-radius: var(--tsk-radius-sm);
+  border-left: 2px solid transparent;
+  transition:
+    color var(--tsk-duration-fast) var(--tsk-ease-out),
+    background var(--tsk-duration-fast) var(--tsk-ease-out),
+    border-color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.toc-link:hover {
+  color: var(--tsk-accent);
+  background: var(--tsk-accent-soft);
+  text-decoration: none;
+}
+
+.toc-h2 {
+  font-weight: 500;
+}
+
+.toc-h3 {
+  font-size: var(--tsk-font-sm);
 }
 
 @media (min-width: 1400px) {
-  .category {
-    position: fixed; /* 保持在左侧 */
-    top:140px;
-    left: 20px; /* 设置左侧位置 */
+  .toc {
+    position: fixed;
+    top: 7.5rem;
+    left: max(1rem, calc((100vw - 920px) / 2 - 18rem));
+  }
+}
+
+@media (max-width: 1399px) {
+  .toc {
+    display: none;
   }
 }
 </style>

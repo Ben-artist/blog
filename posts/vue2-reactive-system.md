@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: vue2 响应式系统深度解析：从原理到实现
 date: 2025-06-24
+description: '从 Object.defineProperty 到依赖收集，深度解析 Vue 2 响应式系统原理与实现。'
 tags: ['vue2', 'proxy']
 ---
 

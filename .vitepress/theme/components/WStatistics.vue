@@ -173,20 +173,21 @@ onMounted(() => {
 .statistics {
   width: 100%;
   display: inline-block;
-  border-radius: 8px;
-  background-color: var(--vp-c-bg);
-  color: var(--vp-c-brand-light);
-  font-weight: bold;
-  padding: 15px;
-  box-shadow: 3px 3px var(--vp-c-brand);
-  border: 2px solid #3f4e4f;
-  transition: all 0.3s ease;
+  border-radius: var(--tsk-radius-md);
+  background: var(--tsk-bg-elevated);
+  color: var(--tsk-text);
+  font-weight: 600;
+  padding: var(--tsk-space-5);
+  border: 1px solid var(--tsk-border);
+  box-shadow: var(--tsk-shadow-xs);
+  transition:
+    transform var(--tsk-duration-normal) var(--tsk-ease-out),
+    box-shadow var(--tsk-duration-normal) var(--tsk-ease-out);
 }
 
 .statistics:hover {
-  color: var(--vp-c-brand-light);
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px var(--vp-c-brand);
+  transform: translateY(-2px);
+  box-shadow: var(--tsk-shadow-sm);
 }
 
 .title-wrapper {
@@ -197,13 +198,14 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 1em;
+  font-size: 0.95em;
   line-height: 1.3;
-  font-weight: bold;
+  font-weight: 600;
   white-space: nowrap;
   position: relative;
   overflow: hidden;
-  color: var(--vp-c-brand-light);
+  color: var(--tsk-text-muted);
+  font-family: var(--tsk-font-display);
 }
 
 .title-hover {
@@ -212,9 +214,9 @@ onMounted(() => {
   top: 0;
   width: 0;
   overflow: hidden;
-  background-color: var(--vp-c-bg);
-  color: var(--vp-c-brand);
-  transition: width 0.4s ease-in-out;
+  background-color: var(--tsk-bg-elevated);
+  color: var(--tsk-accent);
+  transition: width 0.4s var(--tsk-ease-out);
 }
 
 .statistics:hover .title-hover {
@@ -229,18 +231,18 @@ onMounted(() => {
 }
 
 .chart {
-  height: 12px;
-  border-radius: 6px;
-  background-color: #3f4e4f;
+  height: 6px;
+  border-radius: var(--tsk-radius-full);
+  background: var(--tsk-bg-muted);
   margin-bottom: 12px;
   overflow: hidden;
 }
 
 .chart > div {
   height: 100%;
-  border-radius: 6px;
-  background-color: var(--vp-c-brand);
-  transition: width 0.3s ease;
+  border-radius: var(--tsk-radius-full);
+  background: linear-gradient(90deg, var(--tsk-accent), var(--tsk-warm));
+  transition: width 0.3s var(--tsk-ease-out);
 }
 
 .pv-wrapper {
@@ -248,29 +250,29 @@ onMounted(() => {
 }
 
 .statistics-title {
-  font-size: 0.9em;
+  font-size: var(--tsk-font-sm);
   line-height: 1.3;
-  font-weight: bold;
-  color: var(--vp-c-brand-light);
+  font-weight: 500;
+  color: var(--tsk-text-muted);
 }
 
 .statistics-pv,
 .statistics-uv {
   font-size: 1em;
-  font-weight: bold;
-  color: var(--vp-c-brand);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--tsk-accent);
 }
 
 .chart-icon {
   width: 18px;
   height: 18px;
-  color: var(--vp-c-brand);
-  transition: all 0.3s ease;
+  color: var(--tsk-accent);
+  transition: transform var(--tsk-duration-fast) var(--tsk-ease-spring);
 }
 
 .statistics:hover .chart-icon {
-  transform: scale(1.05);
-  color: var(--vp-c-brand);
+  transform: scale(1.08);
 }
 
 /* 响应式设计 */
@@ -286,7 +288,7 @@ onMounted(() => {
   }
   
   .statistics-title {
-    font-size: 0.85em;
+    font-size: var(--tsk-font-sm);
   }
   
   .statistics-pv,

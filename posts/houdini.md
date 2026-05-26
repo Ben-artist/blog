@@ -1,4 +1,5 @@
 ---
+collection: browser-javascript
 title: CSS Houdini：让开发者掌控浏览器渲染的魔法
 description: 深入浅出地介绍CSS Houdini API，探索如何通过JavaScript自定义CSS渲染过程，实现传统CSS无法实现的复杂布局和动画效果
 date: 2025-01-27

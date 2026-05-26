@@ -1,4 +1,5 @@
 ---
+collection: network-security
 title: 网络地址概念详解：从IP地址到子网划分
 date: 2025-09-26
 tags: ['网络技术', 'IP地址', '子网掩码', '网络基础', 'TCP/IP']

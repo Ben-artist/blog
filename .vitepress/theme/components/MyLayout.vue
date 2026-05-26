@@ -1,34 +1,44 @@
 <template>
   <Layout>
     <template #doc-before>
-      <Title />
-      <Category />
+      <template v-if="!isInfoPage">
+        <Title />
+        <Category />
+      </template>
     </template>
     <template #doc-after>
-      <ClientOnly>
-        <WStatistics />
-      </ClientOnly>
-      <Comments />
-      <BackToTop />
+      <template v-if="!isInfoPage">
+        <ClientOnly>
+          <WStatistics />
+        </ClientOnly>
+        <Comments />
+        <BackToTop />
+      </template>
     </template>
-    <!-- Home slot-->
-    <template #home-hero-before><HomeHero /> </template>
-    <template #home-features-after> <Page /> </template>
+    <template #home-features-after>
+      <Home />
+    </template>
+    <template #layout-bottom>
+      <MermaidPreview />
+    </template>
   </Layout>
 </template>
 <script lang="ts" setup>
+import { computed } from "vue";
+import { useRoute } from "vitepress";
 import DefaultTheme from "vitepress/theme";
-import HomeHero from "./HomeHero.vue";
 import Comments from "./Comments.vue";
-import Page from "./Page.vue";
+import Home from "./Home.vue";
 import Category from "./Category.vue";
 import Title from "./Title.vue";
 import BackToTop from "./BackToTop.vue";
 import WStatistics from "./WStatistics.vue";
+
 const { Layout } = DefaultTheme;
-const back = () => {
-  history.back();
-};
+const route = useRoute();
+
+/** 信息助手全屏嵌入页，不展示文章头/评论等 */
+const isInfoPage = computed(() => /\/info\/?$/.test(route.path));
 </script>
 <style scoped>
 button {

@@ -1,4 +1,5 @@
 ---
+collection: engineering
 title: GraphQL深度解析：从概念到实战应用
 description: 深入理解GraphQL的核心概念、类型系统、查询语言，并通过实际代码示例掌握客户端开发技巧，让数据查询变得优雅而高效
 date: 2025-08-14

@@ -1,4 +1,5 @@
 ---
+collection: engineering
 title: 设计模式系列 - 依赖倒置原则详解
 date: 2025-03-13
 tags: ['设计模式', '依赖倒置原则', '面向对象设计', '代码重构']

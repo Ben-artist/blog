@@ -90,7 +90,6 @@ pnpm serve    # 本地预览构建结果
 ```
 blog/
 ├── 📁 assets/           # 静态资源文件
-│   ├── 📁 fonts/        # 字体文件 (Rubik字体)
 │   ├── 📁 images/       # 文章配图资源
 │   └── 📁 videos/       # 视频资源
 ├── 📁 posts/            # 博客文章目录 (25+篇技术文章)

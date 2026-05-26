@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: Vue3系列 - 从发布订阅到响应式系统
 date: 2025-02-28
+description: '从发布订阅模式入手，逐步理解 Vue 3 响应式系统的设计与实现思路。'
 tags: ['JavaScript', 'Vue', '响应式系统']
 ---
 

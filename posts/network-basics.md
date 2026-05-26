@@ -1,4 +1,5 @@
 ---
+collection: network-security
 title: 网络基础系列 - 网络基础知识
 date: 2025-03-13
 tags: ['网络基础', '网络原理', '网络协议']

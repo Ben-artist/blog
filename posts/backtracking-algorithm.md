@@ -1,4 +1,5 @@
 ---
+collection: algorithms
 title: 算法系列 - 回溯算法详解
 date: 2025-03-12
 tags: ['算法', '回溯算法', '递归', '组合问题', '排列问题']

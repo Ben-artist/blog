@@ -1,6 +1,8 @@
 ---
+collection: frontend-frameworks
 title: Vue3系列 - Diff算法详解：原理与实现
 date: 2025-03-03
+description: '详解 Vue 3 Diff 算法如何以最小代价更新 DOM，涵盖原理与实现细节。'
 tags: ['JavaScript', 'Vue', 'Diff算法', '性能优化']
 ---
 

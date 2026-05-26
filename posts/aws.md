@@ -1,4 +1,5 @@
 ---
+collection: network-security
 title: AWS网络架构深度解析：VPC、子网、路由等核心概念
 date: 2025-09-18
 description: 深入理解AWS云网络的核心概念，包括VPC、NAT网关、路由表、子网、网络ACL等组件的功能、配置方法和最佳实践，让云网络架构变得清晰易懂

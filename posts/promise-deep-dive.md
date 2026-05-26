@@ -1,6 +1,8 @@
 ---
+collection: browser-javascript
 title: Promise深入解析:从零实现Promise
 date: 2025-02-21
+description: '从零实现符合 Promise/A+ 规范的 Promise，彻底理解异步编程核心。'
 tags: ['JavaScript', 'Promise', '异步编程']
 ---
 通过循序渐进的方式,从零开始实现一个符合Promise/A+规范的Promise,帮助你深入理解Promise的工作原理。

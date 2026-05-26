@@ -1,12 +1,75 @@
-type Post = {
+import type { CollectionConfig } from "./collections";
+import { slugToPath } from "./collections";
+
+export type Post = {
   frontMatter: {
     date?: string;
     title?: string;
     tags?: string[];
     description?: string;
+    collection?: string;
   };
   regularPath: string;
 };
+
+export type CollectionWithPosts = CollectionConfig & {
+  posts: Post[];
+};
+
+/**
+ * 从文章路径解析 posts 下的 slug（不含扩展名）。
+ */
+export function postSlugFromPath(regularPath: string): string {
+  const match = regularPath.match(/\/posts\/([^/]+)\.html$/);
+  return match?.[1] ?? "";
+}
+
+/**
+ * 按合集配置的 slug 在文章列表中查找。
+ */
+export function resolvePostBySlug(allPosts: Post[], slug: string): Post | undefined {
+  const exactPath = slugToPath(slug);
+  const byExact = allPosts.find((p) => p.regularPath === exactPath);
+  if (byExact) return byExact;
+  return allPosts.find((p) => postSlugFromPath(p.regularPath) === slug);
+}
+
+/**
+ * 将合集配置与文章列表合并：
+ * 1. 优先按 collections.ts 中的 slugs 顺序；
+ * 2. 再纳入 frontmatter.collection 与合集 id 一致、但未写在 slugs 里的文章。
+ */
+export function initCollections(
+  allPosts: Post[],
+  configs: CollectionConfig[],
+): CollectionWithPosts[] {
+  return configs.map((config) => {
+    const fromSlugs: Post[] = [];
+    const seen = new Set<string>();
+
+    for (const slug of config.slugs) {
+      const post = resolvePostBySlug(allPosts, slug);
+      if (post && !seen.has(post.regularPath)) {
+        fromSlugs.push(post);
+        seen.add(post.regularPath);
+      }
+    }
+
+    const fromFrontmatter = allPosts
+      .filter(
+        (p) =>
+          p.frontMatter.collection === config.id && !seen.has(p.regularPath),
+      )
+      .sort((a, b) =>
+        (b.frontMatter.date ?? "").localeCompare(a.frontMatter.date ?? ""),
+      );
+
+    return {
+      ...config,
+      posts: [...fromSlugs, ...fromFrontmatter],
+    };
+  });
+}
 
 export function initTags(post: Post[]) {
   const data: any = {};

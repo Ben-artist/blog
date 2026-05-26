@@ -1,4 +1,5 @@
 ---
+collection: network-security
 title: HTTPS解决了哪些HTTP的问题：SSL/TLS协议深度解析
 date: 2025-07-15
 tags: ['网络协议', '网络安全', 'HTTPS', 'SSL/TLS', '加密传输']
