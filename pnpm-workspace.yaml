@@ -1,0 +1,6 @@
+packages:
+  - '.'
+
+# pnpm 10+ 默认拦截依赖 build scripts；允许 esbuild postinstall
+allowBuilds:
+  esbuild: true

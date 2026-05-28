@@ -4,6 +4,7 @@
   "main": "index.js",
   "author": "TSK",
   "license": "MIT",
+  "packageManager": "pnpm@9.15.9",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev ",
