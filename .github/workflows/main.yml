@@ -37,20 +37,13 @@ jobs:
       - name: Build Packages
         run: pnpm run build
 
-      # 部署到阿里云服务器
-      - name: Deploy to Aliyun Server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
         with:
-          host: 47.120.71.238
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          source: ".vitepress/dist/"
-          target: "/usr/local/nginx/html/blog"
-          strip_components: 2
-          overwrite: true
+          name: vitepress-dist
+          path: .vitepress/dist
+          retention-days: 1
 
-      # 同时部署到 GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -59,7 +52,33 @@ jobs:
         with:
           path: .vitepress/dist
 
-  # GitHub Pages 部署作业
+  # 阿里云 SCP 单独作业，失败不影响 GitHub Pages
+  deploy-aliyun:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: vitepress-dist
+          path: dist
+
+      # 使用 SSH 私钥（推荐）。在 GitHub Secrets 配置：
+      #   SSH_PRIVATE_KEY  — 完整私钥（含 BEGIN/END 行）
+      #   FTP_USERNAME     — 服务器 SSH 用户名（如 root / ubuntu）
+      # 服务器需将对应公钥写入 ~/.ssh/authorized_keys
+      - name: Deploy to Aliyun Server
+        uses: appleboy/scp-action@v1
+        with:
+          host: 47.120.71.238
+          username: ${{ secrets.FTP_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "dist/"
+          target: "/usr/local/nginx/html/blog"
+          strip_components: 1
+          overwrite: true
+
   deploy-github:
     environment:
       name: github-pages
