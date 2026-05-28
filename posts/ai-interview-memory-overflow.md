@@ -1,12 +1,10 @@
 ---
 collection: ai-agent
-title: AI知识点
+title: Memory 超限
 date: 2026-05-26
 description: Memory 超限：淘汰策略、短中长期分层、治理流水线、面试三步答法。
 tags: [AI, Agent, Memory, 面试, 上下文]
 ---
-
-# Memory 超限策略
 
 > 整理自 [《Memory 超限处理怎么办？》](https://mp.weixin.qq.com/s/dOkDqx3eJJVo0FT7QMageQ)
 

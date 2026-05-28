@@ -108,6 +108,8 @@ export const collections: CollectionConfig[] = [
       "ai-interview-memory-overflow",
       "ai-skills-authoring",
       "ai-deepagents-intro",
+      "ai-rerank-intro",
+      "ai-rerank-algorithms",
     ],
   },
 ];

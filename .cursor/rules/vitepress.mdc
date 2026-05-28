@@ -1,8 +1,115 @@
 ---
-alwaysApply: true
+description: VitePress 博客正文写作规范与 Markdown 增强语法（适用于 posts 与站点 Markdown 页面）
+globs: posts/**/*.md,*.md
+alwaysApply: false
 ---
 
-你是一个写博客的专家,需要把博客写的通俗易懂，但是还要有一定的深度，
-语言要专业，要求深入浅出，对重点难点有例子讲解,
-同时博客使用的是 vitepress 的 markdown 插件，所以需要按照 vitepress 的 markdown 插件的语法来写博客
-其中美化markdown使用的网站是 https://vitepress.dev/guide/markdown
+# VitePress 博客写作规范
+
+本仓库技术博客使用 [VitePress](https://vitepress.dev/) 构建。撰写或修改 **Markdown 正文**（尤其 `posts/`）时遵循以下约定。
+
+官方 Markdown 扩展说明：<https://vitepress.dev/guide/markdown>
+
+---
+
+## 一、写作目标
+
+- **读者**：有基础的前端/工程背景，不是零基础科普；避免冗长铺垫和重复常识。
+- **风格**：专业、准确、**深入浅出**——先给结论或结构，再展开原理；难点用 **例子、对比表、短代码** 说明，不堆概念。
+- **篇幅**：单篇聚焦一个主题；能表格说清的不用长段落；避免「面试八股」口吻，除非文章主题就是面试题。
+
+---
+
+## 二、文章结构
+
+1. **Frontmatter**（必填）：
+
+```yaml
+---
+title: 简明标题
+date: YYYY-MM-DD
+description: 一句话摘要（用于 SEO / 列表）
+tags: [标签1, 标签2]
+collection: 合集-id   # 若属于某合集
+---
+```
+
+2. **正文建议顺序**：问题/背景 → 核心概念（表格或示意图）→ 原理或流程 → **可运行示例**（优先 TypeScript）→ 实践建议或小结。
+3. **标题层级**：文内从 `##` 起（`#` 留给页面 title）；层级连续，不跳级。
+
+---
+
+## 三、VitePress Markdown 语法（优先使用）
+
+### 自定义容器
+
+```markdown
+::: tip 提示标题
+简短补充说明。
+:::
+
+::: warning 注意
+易错点或边界条件。
+:::
+
+::: details 点击展开
+次要内容、长代码或进阶说明。
+:::
+```
+
+### 代码块
+
+- 标注语言：`ts`、`bash`、`yaml` 等；示例力求 **可复制、可运行**，省略处用注释说明，不用 `...` 糊弄关键逻辑。
+- 行高亮与文件名：遵循 VitePress 文档中的 [line highlighting](https://vitepress.dev/guide/markdown#line-highlighting-in-code-blocks) 与 [code groups](https://vitepress.dev/guide/markdown#code-groups)。
+
+```markdown
+```ts {2,4}
+// 高亮第 2、4 行
+```
+
+```md
+::: code-group
+```bash [pnpm]
+pnpm install
+```
+```bash [npm]
+npm install
+```
+:::
+```
+
+### 图表
+
+- 流程、架构用 **Mermaid**（本仓库已启用 Mermaid 插件）；保持节点文字简短。
+- 对比信息优先 **Markdown 表格**，注意列数不宜过多，避免首列过窄导致中文竖排（表头与首列宜短）。
+
+### 其他
+
+- 外链使用完整 URL；站内路径与 `base: /blog/` 一致。
+- 需要脚注、任务列表、数学公式时，按 [VitePress Markdown 指南](https://vitepress.dev/guide/markdown) 使用，不引入与主题冲突的 HTML 样式。
+
+---
+
+## 四、代码与技术示例
+
+- 本博客示例语言默认 **TypeScript**；与主题无关的 Python 示例需有明确理由。
+- 命令示例优先 **pnpm**。
+- 引入 API/库时写清 **包名与最小依赖**，环境变量说明用途，不提交真实密钥。
+- 同一系列文章（如 AI 合集）之间：**术语、章节编号风格保持一致**；避免与已有文章大段重复，可写「见《xxx》」式一句带过。
+
+---
+
+## 五、禁止与慎用
+
+- 不要为凑字数写百科式定义（如「什么是 JSON」）。
+- 不要整篇无代码、无表格的纯 prose。
+- 不要擅自新增与任务无关的站点配置、主题大改；**只改用户要求的 Markdown 或明确涉及的文件**。
+- 除非用户要求，不要添加冗长的「参考文献」外链列表；必要出处正文内一句带过即可。
+
+---
+
+## 六、与本仓库的协作
+
+- 新文章放在 `posts/`，文件名用英文 kebab-case（如 `ai-rerank-algorithms.md`）。
+- 若属合集，同步更新 `.vitepress/theme/collections.ts` 中的 `slugs`（及 frontmatter `collection` 字段）。
+- 修改后可在本地 `pnpm dev` 预览排版、表格与 Mermaid 是否正常渲染。

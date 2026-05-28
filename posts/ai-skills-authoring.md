@@ -6,8 +6,6 @@ description: Agent Skill 写作要点：L1/L2/L3 渐进披露、description 触�
 tags: [AI, Agent, Skill, Cursor]
 ---
 
-# 优秀的 Skill 应该怎么写
-
 **Skill** = 给 Agent 的 **可检索工作手册**（`SKILL.md` + 可选引用文件），在匹配任务时注入 context。不是 MCP，不是插件；价值在于 **补 Agent 不知道的约束与流程**，且 **少占 token**。
 
 ---

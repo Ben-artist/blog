@@ -1,17 +1,12 @@
 ---
 collection: ai-agent
-title: Deep Agents 入门：API 与 TypeScript 示例
+title: Deep Agents 入门
 date: 2026-05-27
 description: Deep Agents 简介与 TS 示例：backend、permissions、skills、memory、checkpointer。
 tags: [AI, Agent, DeepAgents, LangChain, TypeScript]
 ---
 
-# Deep Agents 入门
-
 **Deep Agents**（npm：`deepagents`）是 LangChain 的 **Agent Harness**：在 LangGraph 上打包好规划、文件系统、子 Agent、上下文压缩等能力，不用从零拼 prompt + 工具链。
-
-- 仓库：[langchain-ai/deepagentsjs](https://github.com/langchain-ai/deepagentsjs)
-- 文档：[Deep Agents JS Overview](https://docs.langchain.com/oss/javascript/deepagents/overview)
 
 ---
 
@@ -36,8 +31,6 @@ pnpm add deepagents langchain @langchain/core zod
 # 按需加模型包，例如：
 pnpm add @langchain/openai
 ```
-
-环境变量示例：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY` 等（与所选 `provider:model` 一致）。
 
 ---
 
@@ -66,7 +59,7 @@ const agent = createDeepAgent({
 |------|------|
 | `agent.invoke({ messages })` | 同步跑完一轮 |
 | `agent.stream({ messages }, { streamMode: "values" })` | 流式（与 LangGraph 一致） |
-| `agent.getState` / checkpoint | 持久化、恢复会话 |
+| `agent.getState` / `checkpoint` | 持久化、恢复会话 |
 
 **输入/输出形状**（最常见）：
 
@@ -309,18 +302,13 @@ const agent = createDeepAgent({
 });
 ```
 
-| `operations` | 覆盖工具 |
-|--------------|----------|
-| `read` | `ls` `read_file` `glob` `grep` |
-| `write` | `write_file` `edit_file` |
-
 子 Agent 可单独 `permissions: []`（放开）或覆盖父规则。Sandbox backend 下 `execute` 不受此限制。
 
 ---
 
 ### 5.4 skills（按需加载 SKILL.md）
 
-Skill 路径是 **backend 根下的虚拟 POSIX 路径**（如 `"/skills/"`），不是宿主机路径（除非 `FilesystemBackend`）。
+**路径别填错层**：`skills: ["/skills/"]` 指的是 Agent **虚拟盘**里的目录（和 `read_file("/skills/xxx/SKILL.md")` 是同一套路径），不是你电脑上的 `~/projects/...`。文件内容要靠 `invoke` 的 `files` 字段灌进去，或换 `FilesystemBackend` 才直接映射本地目录（见下）。
 
 **StateBackend：启动前把 SKILL 灌进 `files`**
 
@@ -336,6 +324,7 @@ function toFileData(content: string): FileData {
   return { content, mimeType: "text/plain", created_at: now, modified_at: now };
 }
 
+// 本机路径：从磁盘读内容
 const skillMd = fs.readFileSync(".cursor/skills/my-skill/SKILL.md", "utf8");
 
 const agent = createDeepAgent({
@@ -348,11 +337,21 @@ const agent = createDeepAgent({
 await agent.invoke(
   {
     messages: [{ role: "user", content: "按 my-skill 规范生成 commit message" }],
+    // 虚拟路径 key：不是本机目录！只是在 StateBackend 里「建文件」
     files: { "/skills/my-skill/SKILL.md": toFileData(skillMd) },
   },
   { configurable: { thread_id: "t1" } },
 );
 ```
+
+| | 路径示例 | 含义 |
+|--|----------|------|
+| 本机 | `.cursor/skills/my-skill/SKILL.md` | `fs.readFileSync` 读磁盘 |
+| 虚拟盘 | `/skills/my-skill/SKILL.md` | `files` 的 **key**，Agent `read_file` 用这个地址 |
+
+本机可以没有 `/skills/` 文件夹；key 只表示虚拟盘上的挂载点，须与 `skills: ["/skills/"]` 前缀一致。
+
+**为啥用虚拟路径？** 工具统一成 `/workspace/...` 这种 POSIX 路径，换 `StateBackend` / `StoreBackend` / Sandbox 不用改 Agent；配合 `permissions` 才能限制读写范围；文件跟 `checkpointer` 一起进 thread 状态。`FilesystemBackend` 只是把虚拟路径 **映射** 到 `rootDir`，本地开发图省事时用。
 
 **FilesystemBackend：直接指本地目录**
 
@@ -405,8 +404,6 @@ await agent.invoke(
   { configurable: { thread_id: "project-a" } },
 );
 ```
-
-跨 thread 共享记忆：用 `CompositeBackend` 把 `/memories/` 挂 `StoreBackend`，再配合 `permissions` 禁止 Agent 改写只读区（见 [Permissions](https://docs.langchain.com/oss/javascript/deepagents/permissions)）。
 
 ---
 
@@ -462,39 +459,3 @@ await agent.invoke(
   thread,
 );
 ```
-
----
-
-## 六、默认工具链（无需手写）
-
-创建后 Agent **自带**（可在 systemPrompt 里约束用法）：
-
-```text
-write_todos          # 规划
-ls / read_file / write_file / edit_file / glob / grep
-task                 # 调子 Agent
-# sandbox backend 下另有 execute
-```
-
-典型链路：`write_todos` → 搜索/读文件 → `write_file` 落盘大结果 → 必要时 `task` 子 Agent → 汇总回复。
-
----
-
-## 七、和自建 Agent 怎么选
-
-| | Deep Agents | 自建 LangGraph / createAgent |
-|--|-------------|------------------------------|
-| 上手 | 快，默认 prompt + 工具齐全 | 慢，全自己设计 |
-| 控制 | 通过 middleware、backend、permissions 扩展 | 完全自定义 |
-| 依赖 | LangChain + LangGraph 栈 | 可更轻 |
-| 场景 | 编码助手、研究、多步工作流 | 单一工具、固定 DAG |
-
----
-
-## 参考
-
-- [Quickstart (JS)](https://docs.langchain.com/oss/javascript/deepagents/quickstart)
-- [Customization](https://docs.langchain.com/oss/javascript/deepagents/customization)
-- [Backends](https://docs.langchain.com/oss/javascript/deepagents/backends)
-- [Permissions](https://docs.langchain.com/oss/javascript/deepagents/permissions)
-- [npm: deepagents](https://www.npmjs.com/package/deepagents)

@@ -53,7 +53,7 @@
       <ul class="collection-list">
         <li v-for="item in collectionList" :key="item.id">
           <a
-            :href="withBase(`/collections?id=${item.id}`)"
+            :href="collectionLink(item.id)"
             class="collection-row"
           >
             <span class="collection-name">{{ item.title }}</span>
@@ -87,6 +87,10 @@ const recentPosts = computed(() =>
 const collectionList = computed(() =>
   initCollections((theme.value.posts as Post[]) || [], collections),
 );
+
+function collectionLink(id: string): string {
+  return withBase(`/collections?id=${id}`);
+}
 
 /** @param date ISO date string from frontmatter */
 function formatDate(date?: string) {

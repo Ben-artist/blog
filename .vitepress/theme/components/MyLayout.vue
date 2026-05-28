@@ -1,13 +1,13 @@
 <template>
   <Layout>
     <template #doc-before>
-      <template v-if="!isInfoPage">
+      <template v-if="!isMinimalPage">
         <Title />
         <Category />
       </template>
     </template>
     <template #doc-after>
-      <template v-if="!isInfoPage">
+      <template v-if="!isMinimalPage">
         <ClientOnly>
           <WStatistics />
         </ClientOnly>
@@ -37,8 +37,9 @@ import WStatistics from "./WStatistics.vue";
 const { Layout } = DefaultTheme;
 const route = useRoute();
 
-/** 信息助手全屏嵌入页，不展示文章头/评论等 */
+/** 信息助手等定制页，不展示文章头/评论等 */
 const isInfoPage = computed(() => /\/info\/?$/.test(route.path));
+const isMinimalPage = computed(() => isInfoPage.value);
 </script>
 <style scoped>
 button {
