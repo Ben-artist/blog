@@ -104,7 +104,7 @@ onContentUpdated(() => {
 @media (min-width: 1400px) {
   .toc {
     position: fixed;
-    top: 7.5rem;
+    top: 5.5rem;
     left: max(1rem, calc((100vw - 920px) / 2 - 18rem));
   }
 }

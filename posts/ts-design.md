@@ -6,7 +6,7 @@ description: '从语言设计者视角理解 TypeScript 类型系统，对比 in
 tags: ["TypeScript", "类型系统", "前端开发"]
 ---
 
-作为前端开发者，我们在日常工作中频繁使用 TypeScript 编写代码。然而，我们是否真正理解了 TypeScript 的设计理念？本文将从语言设计者的视角，深入剖析 TypeScript 的核心设计思想。
+作为全栈开发者，我们在日常工作中频繁使用 TypeScript 编写代码。然而，我们是否真正理解了 TypeScript 的设计理念？本文将从语言设计者的视角，深入剖析 TypeScript 的核心设计思想。
 
 ## 1. Interface 与 Type：设计意图的差异
 

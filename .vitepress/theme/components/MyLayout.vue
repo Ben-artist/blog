@@ -4,10 +4,12 @@
       <template v-if="!isMinimalPage">
         <Title />
         <Category />
+        <DocToc v-if="isPostPage" />
       </template>
     </template>
     <template #doc-after>
       <template v-if="!isMinimalPage">
+        <PostNav v-if="isPostPage" />
         <ClientOnly>
           <WStatistics />
         </ClientOnly>
@@ -31,8 +33,11 @@ import Comments from "./Comments.vue";
 import Home from "./Home.vue";
 import Category from "./Category.vue";
 import Title from "./Title.vue";
+import DocToc from "./DocToc.vue";
+import PostNav from "./PostNav.vue";
 import BackToTop from "./BackToTop.vue";
 import WStatistics from "./WStatistics.vue";
+import { regularPathFromRoute } from "../utils";
 
 const { Layout } = DefaultTheme;
 const route = useRoute();
@@ -40,6 +45,7 @@ const route = useRoute();
 /** 信息助手等定制页，不展示文章头/评论等 */
 const isInfoPage = computed(() => /\/info\/?$/.test(route.path));
 const isMinimalPage = computed(() => isInfoPage.value);
+const isPostPage = computed(() => !!regularPathFromRoute(route.path));
 </script>
 <style scoped>
 button {

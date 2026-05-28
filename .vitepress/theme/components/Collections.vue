@@ -7,23 +7,16 @@
           文章合集
         </h1>
         <p>
-          按主题整理的系列文章，适合系统学习；需要按关键词检索请用
-          <a :href="withBase('/tags')">标签页</a>。
+          按主题整理的系列文章，适合系统学习
         </p>
       </header>
 
       <div class="collections-grid">
-        <button
-          v-for="(item, index) in collectionList"
-          :key="item.id"
-          type="button"
-          class="collection-card tsk-card"
+        <button v-for="(item, index) in collectionList" :key="item.id" type="button" class="collection-card tsk-card"
           :style="{
             '--collection-accent': item.accent,
             animationDelay: `${index * 50}ms`,
-          }"
-          @click="openCollection(item.id)"
-        >
+          }" @click="openCollection(item.id)">
           <span class="collection-icon" aria-hidden="true">{{ item.icon }}</span>
           <div class="collection-body">
             <h2 class="collection-name">{{ item.title }}</h2>
@@ -43,11 +36,7 @@
         </button>
       </nav>
 
-      <header
-        v-if="activeCollection"
-        class="detail-hero"
-        :style="{ '--collection-accent': activeCollection.accent }"
-      >
+      <header v-if="activeCollection" class="detail-hero" :style="{ '--collection-accent': activeCollection.accent }">
         <span class="detail-icon" aria-hidden="true">{{ activeCollection.icon }}</span>
         <div>
           <h1 class="detail-title">{{ activeCollection.title }}</h1>
@@ -57,13 +46,9 @@
       </header>
 
       <div v-if="activeCollection" class="article-list">
-        <a
-          v-for="(article, index) in activeCollection.posts"
-          :key="article.regularPath"
-          :href="withBase(article.regularPath)"
-          class="article-card tsk-card"
-          :style="{ animationDelay: `${index * 40}ms` }"
-        >
+        <a v-for="(article, index) in activeCollection.posts" :key="article.regularPath"
+          :href="withBase(article.regularPath)" class="article-card tsk-card"
+          :style="{ animationDelay: `${index * 40}ms` }">
           <span class="article-index">{{ String(index + 1).padStart(2, "0") }}</span>
           <div class="article-main">
             <h3 class="article-title">{{ article.frontMatter.title }}</h3>

@@ -11,7 +11,7 @@
       <div class="home-intro">
         <h1 class="home-title">TSK</h1>
         <p class="home-tagline">
-          前端 · 框架原理 · 浏览器 · 网络与安全 · Web3
+          全栈 · AI / Agent · Web3 · 前端深度笔记
         </p>
         <div class="home-actions">
           <a

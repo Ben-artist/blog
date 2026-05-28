@@ -1,6 +1,6 @@
 ---
 collection: ai-agent
-title: RAG 重排算法实战：RRF、RankLLM、CrossEncoder（TypeScript）
+title: RAG 重排算法实战：RRF、RankLLM、CrossEncoder
 date: 2026-05-27
 description: 三种 RAG 重排方法原理与 TS 完整样例：多查询 RRF 融合、LLM 打分、CrossEncoder 精排。
 tags: [AI, RAG, Rerank, TypeScript, LangChain]

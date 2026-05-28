@@ -6,7 +6,7 @@ description: '基于 mini-react 项目，解析 Fiber 架构、Hooks、虚拟 DO
 tags: ['React', 'Fiber', 'Hooks', '虚拟DOM', '源码解析']
 ---
 
-React 作为最流行的前端框架之一，其核心实现原理一直是前端开发者深入学习的重点。本文将基于 mini-react 项目，从零开始解析 React 的核心实现机制，包括 Fiber 架构、虚拟 DOM、Diff 算法、类组件、函数组件和 Hooks 等核心概念。
+React 作为最流行的前端框架之一，其核心实现原理一直是全栈开发者深入学习的重点。本文将基于 mini-react 项目，从零开始解析 React 的核心实现机制，包括 Fiber 架构、虚拟 DOM、Diff 算法、类组件、函数组件和 Hooks 等核心概念。
 
 ---
 

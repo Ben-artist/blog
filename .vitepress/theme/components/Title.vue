@@ -12,6 +12,13 @@
         {{ collectionMeta.title }}
       </a>
       <p class="publish-date">{{ publishDate }}</p>
+      <p v-if="readingMeta" class="reading-meta">
+        <Icon name="clock" :size="14" />
+        约 {{ readingMeta.readingMinutes }} 分钟 · {{ readingMeta.wordCount }} 字
+      </p>
+      <p v-if="lastUpdatedText" class="last-updated">
+        更新于 {{ lastUpdatedText }}
+      </p>
     </div>
   </header>
 </template>
@@ -20,19 +27,21 @@
 import { useData, onContentUpdated, withBase } from "vitepress";
 import { ref, computed } from "vue";
 import { collections } from "../collections";
+import type { Post } from "../utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Icon from "./Icon.vue";
 
 type PageData = {
   description: string;
   title: string;
   frontmatter: { date?: string; collection?: string };
   headers: object[];
-  lastUpdated: number;
+  lastUpdated?: number;
   relativePath: string;
 };
 
-const { page: pageData } = useData();
+const { page: pageData, theme } = useData();
 const publishDate = ref("");
 
 dayjs.extend(relativeTime);
@@ -40,6 +49,24 @@ dayjs.extend(relativeTime);
 const collectionMeta = computed(() => {
   const id = (pageData.value.frontmatter as PageData["frontmatter"]).collection;
   return collections.find((c) => c.id === id);
+});
+
+const readingMeta = computed(() => {
+  const rp = `/${pageData.value.relativePath.replace(/\.md$/, ".html")}`;
+  const post = ((theme.value.posts as Post[]) || []).find(
+    (p) => p.regularPath === rp,
+  );
+  if (!post?.wordCount) return null;
+  return {
+    wordCount: post.wordCount,
+    readingMinutes: post.readingMinutes ?? 1,
+  };
+});
+
+const lastUpdatedText = computed(() => {
+  const ts = pageData.value.lastUpdated;
+  if (!ts) return "";
+  return dayjs(ts).format("YYYY-MM-DD");
 });
 
 onContentUpdated(() => {
@@ -97,9 +124,18 @@ onContentUpdated(() => {
   text-decoration: none;
 }
 
-.publish-date {
+.publish-date,
+.reading-meta,
+.last-updated {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin: 0;
   font-size: var(--tsk-font-sm);
   color: var(--tsk-text-subtle);
+}
+
+.reading-meta {
+  color: var(--tsk-text-muted);
 }
 </style>

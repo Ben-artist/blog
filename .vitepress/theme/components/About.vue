@@ -9,9 +9,15 @@
         class="about-avatar"
       />
       <h1>Hi，我是 TSK</h1>
+      <p class="about-tagline">全栈 · AI / Agent · Web3</p>
+      <ul class="about-roles" aria-label="能力方向">
+        <li>全栈交付</li>
+        <li>AI / RAG</li>
+        <li>Web3</li>
+      </ul>
       <p class="about-lead">
-        前端开发者，专注框架原理、浏览器机制、网络与安全、Web3 等技术深度写作。
-        这个博客用<strong>深入浅出</strong>的方式记录学习笔记，每篇文章都尽量配有示例与图示。
+        全栈开发者，覆盖前端工程、Node 后端、<strong>AI Agent / RAG</strong> 与 Web3。
+        博客用<strong>深入浅出</strong>的方式记录学习笔记，每篇尽量配有示例与图示。
       </p>
       <div class="about-links">
         <a
@@ -44,39 +50,87 @@
           <Icon name="books" :size="16" />
           全部合集
         </a>
+        <a
+          href="https://1996tsk.top/blog/rss.xml"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="about-link"
+        >
+          <Icon name="arrow-right" :size="16" />
+          RSS
+        </a>
       </div>
     </header>
 
-    <section class="about-section">
+    <section class="about-section about-intro">
       <h2>
-        <Icon name="sparkles" :size="20" />
-        推荐阅读路径
+        <Icon name="user" :size="20" />
+        关于我
       </h2>
-      <p class="section-hint">按主题合集循序渐进，比单篇随机阅读更系统。</p>
-      <ol class="reading-path">
-        <li v-for="(item, index) in collections" :key="item.id">
-          <a
-            :href="withBase(`/collections?id=${item.id}`)"
-            class="path-card tsk-card"
-            :style="{ animationDelay: `${Number(index) * 50}ms` }"
-          >
-            <span class="path-index">{{ Number(index) + 1 }}</span>
-            <span class="path-icon" aria-hidden="true">{{ item.icon }}</span>
-            <span class="path-text">
-              <strong>{{ item.title }}</strong>
-              <small>{{ item.description }}</small>
-            </span>
-            <Icon name="chevron-right" :size="18" class="path-arrow" />
-          </a>
-        </li>
-      </ol>
+      <p
+        v-for="(paragraph, i) in aboutIntroParagraphs"
+        :key="i"
+        class="about-paragraph"
+      >
+        {{ paragraph }}
+      </p>
     </section>
+
+    <section class="about-section about-stack">
+      <h2>
+        <Icon name="layers" :size="20" />
+        技术栈
+      </h2>
+      <p class="section-hint">
+        从前端、后端到 AI 与 Web3，图标即常用技术；全栈可独立负责需求到上线。
+      </p>
+      <div
+        v-for="(group, gi) in techStackGroups"
+        :key="group.id"
+        class="stack-group"
+        :style="{ animationDelay: `${Number(gi) * 50}ms` }"
+      >
+        <header class="stack-group-head">
+          <h3>{{ group.title }}</h3>
+          <p>{{ group.description }}</p>
+        </header>
+        <ul class="stack-icons">
+          <li
+            v-for="item in group.items"
+            :key="`${group.id}-${item.name}`"
+            class="stack-chip tsk-card"
+          >
+            <span class="stack-chip-icon" aria-hidden="true">
+              <img
+                v-if="techIconSrc(item)"
+                :src="techIconSrc(item)!"
+                :alt="item.name"
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+              />
+              <span v-else class="stack-chip-fallback">{{
+                item.name.charAt(0)
+              }}</span>
+            </span>
+            <span class="stack-chip-label">{{ item.name }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+   
   </article>
 </template>
 
 <script setup lang="ts">
 import { useData, withBase } from "vitepress";
-import { collections } from "../collections";
+import {
+  aboutIntroParagraphs,
+  techIconSrc,
+  techStackGroups,
+} from "../about-tech-stack";
 import Icon from "./Icon.vue";
 
 const { theme } = useData();
@@ -89,7 +143,7 @@ const personalSiteUrl =
 .about {
   margin: 0 auto;
   padding: var(--tsk-space-5) var(--tsk-space-5) var(--tsk-space-8);
-  max-width: 42rem;
+  max-width: 52rem;
 }
 
 .about-hero {
@@ -110,7 +164,7 @@ const personalSiteUrl =
 }
 
 .about-hero h1 {
-  margin: 0 0 var(--tsk-space-3);
+  margin: 0 0 var(--tsk-space-2);
   font-family: var(--tsk-font-display);
   font-size: 2.25rem;
   font-weight: 600;
@@ -118,9 +172,45 @@ const personalSiteUrl =
   color: var(--tsk-text);
 }
 
+.about-tagline {
+  margin: 0 0 var(--tsk-space-3);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--tsk-accent);
+}
+
+.about-roles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--tsk-space-2);
+  margin: 0 0 var(--tsk-space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.about-roles li {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tsk-text-muted);
+  background: var(--tsk-bg-elevated);
+  border: 1px solid var(--tsk-border);
+  border-radius: var(--tsk-radius-full);
+}
+
+.about-roles li:first-child {
+  color: var(--tsk-accent);
+  border-color: color-mix(in srgb, var(--tsk-accent) 40%, var(--tsk-border));
+  background: color-mix(in srgb, var(--tsk-accent) 8%, var(--tsk-bg-elevated));
+}
+
 .about-lead {
   margin: 0 auto var(--tsk-space-5);
-  max-width: 34rem;
+  max-width: 36rem;
   line-height: 1.75;
   color: var(--tsk-text-muted);
 }
@@ -179,6 +269,119 @@ const personalSiteUrl =
   margin: 0 0 var(--tsk-space-5);
   font-size: 0.95rem;
   color: var(--tsk-text-muted);
+}
+
+.about-intro {
+  margin-bottom: var(--tsk-space-8);
+}
+
+.about-paragraph {
+  margin: 0 0 var(--tsk-space-4);
+  line-height: 1.75;
+  color: var(--tsk-text-muted);
+}
+
+.about-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.about-stack {
+  margin-bottom: var(--tsk-space-8);
+}
+
+.stack-group {
+  margin-bottom: var(--tsk-space-6);
+  animation: tsk-fade-up var(--tsk-duration-slow) var(--tsk-ease-out) both;
+}
+
+.stack-group:last-child {
+  margin-bottom: 0;
+}
+
+.stack-group-head {
+  margin-bottom: var(--tsk-space-3);
+}
+
+.stack-group-head h3 {
+  margin: 0 0 0.2rem;
+  font-family: var(--tsk-font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tsk-text);
+}
+
+.stack-group-head p {
+  margin: 0;
+  font-size: var(--tsk-font-sm);
+  color: var(--tsk-text-subtle);
+}
+
+.stack-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tsk-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 5.5rem;
+  padding: var(--tsk-space-3) var(--tsk-space-3) var(--tsk-space-2);
+  text-align: center;
+  transition:
+    transform var(--tsk-duration-fast) var(--tsk-ease-out),
+    border-color var(--tsk-duration-fast) var(--tsk-ease-out);
+}
+
+.stack-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--tsk-accent);
+}
+
+.stack-chip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--tsk-radius-md);
+  background: var(--tsk-bg);
+  border: 1px solid var(--tsk-border);
+}
+
+.stack-chip-icon img {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+
+/* 深色模式下部分黑色 logo 仍可见 */
+html.dark .stack-chip-icon img[src*="nextdotjs"],
+html.dark .stack-chip-icon img[src*="openai"],
+html.dark .stack-chip-icon img[src*="cursor"],
+html.dark .stack-chip-icon img[src*="langchain"],
+html.dark .stack-chip-icon img[src*="prisma"] {
+  filter: invert(1) brightness(1.15);
+}
+
+.stack-chip-fallback {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tsk-accent);
+}
+
+.stack-chip-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--tsk-text-muted);
+  max-width: 6.5rem;
 }
 
 .reading-path {

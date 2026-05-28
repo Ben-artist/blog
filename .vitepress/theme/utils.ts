@@ -10,7 +10,16 @@ export type Post = {
     collection?: string;
   };
   regularPath: string;
+  wordCount?: number;
+  readingMinutes?: number;
 };
+
+export interface PostNavResult {
+  collection: CollectionWithPosts | null;
+  prev: Post | null;
+  next: Post | null;
+  related: Post[];
+}
 
 export type CollectionWithPosts = CollectionConfig & {
   posts: Post[];
@@ -69,6 +78,60 @@ export function initCollections(
       posts: [...fromSlugs, ...fromFrontmatter],
     };
   });
+}
+
+/**
+ * 将页面路径转为 posts 的 regularPath（/posts/slug.html）。
+ */
+export function regularPathFromRoute(routePath: string): string | null {
+  const match = routePath.match(/\/posts\/([^/]+?)(?:\.html)?\/?$/);
+  if (!match) return null;
+  return `/posts/${match[1]}.html`;
+}
+
+/**
+ * 合集内上一篇 / 下一篇，以及同合集推荐阅读（最多 3 篇）。
+ */
+export function getPostNav(
+  routePath: string,
+  allPosts: Post[],
+  configs: CollectionConfig[],
+): PostNavResult {
+  const regularPath = regularPathFromRoute(routePath);
+  const empty: PostNavResult = {
+    collection: null,
+    prev: null,
+    next: null,
+    related: [],
+  };
+  if (!regularPath) return empty;
+
+  const collectionsWithPosts = initCollections(allPosts, configs);
+  for (const col of collectionsWithPosts) {
+    const idx = col.posts.findIndex((p) => p.regularPath === regularPath);
+    if (idx === -1) continue;
+    const related = col.posts
+      .filter((_, i) => i !== idx)
+      .slice(0, 3);
+    return {
+      collection: col,
+      prev: idx > 0 ? col.posts[idx - 1] : null,
+      next: idx < col.posts.length - 1 ? col.posts[idx + 1] : null,
+      related,
+    };
+  }
+
+  const sorted = [...allPosts].sort((a, b) =>
+    (b.frontMatter.date ?? "").localeCompare(a.frontMatter.date ?? ""),
+  );
+  const idx = sorted.findIndex((p) => p.regularPath === regularPath);
+  if (idx === -1) return empty;
+  return {
+    collection: null,
+    prev: idx < sorted.length - 1 ? sorted[idx + 1] : null,
+    next: idx > 0 ? sorted[idx - 1] : null,
+    related: sorted.filter((p) => p.regularPath !== regularPath).slice(0, 3),
+  };
 }
 
 export function initTags(post: Post[]) {
