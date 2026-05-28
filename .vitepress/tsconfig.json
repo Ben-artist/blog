@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "types": ["vite/client"]
+  },
+  "include": [
+    "env.d.ts",
+    "config.ts",
+    "plugins/**/*.ts",
+    "theme/**/*.ts",
+    "theme/**/*.vue",
+    "baidu-hm.ts",
+    "../posts/**/*.md"
+  ]
+}

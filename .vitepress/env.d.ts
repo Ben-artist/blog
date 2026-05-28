@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="vitepress/client" />
 
 interface Window {
   _hmt?: unknown[];
