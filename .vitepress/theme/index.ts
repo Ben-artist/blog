@@ -15,6 +15,7 @@ import busuanzi from "busuanzi.pure.js";
 import { onMounted } from "vue";
 import "./custom.css";
 import { inBrowser } from "vitepress";
+import { trackBaiduPageview } from "./baidu-analytics";
 export default {
   extends: Theme,
   Layout: MyLayout,
@@ -23,6 +24,7 @@ export default {
     if (inBrowser) {
       router.onAfterRouteChange = (to) => {
         busuanzi.fetch();
+        trackBaiduPageview(to);
       };
     }
     app.component("Archives", Archives);

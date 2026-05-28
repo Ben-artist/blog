@@ -6,6 +6,7 @@ import { defineConfig } from "vitepress";
 import vitepressMermaidConfig from "@unify-js/vitepress-mermaid/config";
 import { codeFenceMetaPlugin } from "./plugins/code-fence-meta";
 import { writeRssFeed } from "./plugins/generate-rss";
+import { getBaiduHmId } from "./baidu-hm";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const postsDir = path.resolve(__dirname, "../posts");
@@ -15,6 +16,8 @@ const SITE_URL = "https://1996tsk.top/blog";
 const SITE_TITLE = "TSK 技术博客";
 const SITE_DESCRIPTION =
   "全栈 · AI Agent · Web3 · 前端深度笔记，深入浅出记录学习与工程实践。";
+
+const BAIDU_HM_ID = getBaiduHmId();
 
 /** 新增/修改 posts 时重载 config，刷新 themeConfig.posts */
 function postsConfigHmr(): Plugin {
@@ -41,6 +44,9 @@ export default defineConfig({
   extends: vitepressMermaidConfig,
   vite: {
     plugins: [postsConfigHmr()],
+    define: {
+      "import.meta.env.VITE_BAIDU_HM_ID": JSON.stringify(BAIDU_HM_ID),
+    },
   },
   lang: "zh-CN",
   title: "TSK",
@@ -88,6 +94,15 @@ export default defineConfig({
         content: "TSK",
       },
     ],
+    ...(BAIDU_HM_ID
+      ? [
+          [
+            "script",
+            {},
+            `var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?${BAIDU_HM_ID}";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();`,
+          ],
+        ]
+      : []),
   ],
   lastUpdated: true,
   transformHead({ pageData }) {

@@ -1,4 +1,6 @@
 # Build and Release Folders
+.env
+.env.local
 node_modules
 .vitepress/dist
 .vitepress/cache
